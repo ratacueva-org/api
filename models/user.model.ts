@@ -1,5 +1,5 @@
-// models/user.model.ts
 import mongoose, { Schema, Document } from "mongoose";
+import bcrypt from "bcrypt";
 
 export type Role = "client" | "employee" | "admin";
 
@@ -23,6 +23,7 @@ interface PaymentMethod {
 }
 
 export interface IUser extends Document {
+  _id: string | mongoose.Types.ObjectId; 
   name: string;
   lastName: string;
   secondLastName: string
@@ -36,8 +37,10 @@ export interface IUser extends Document {
   isVerified: boolean;
   verificationToken?: string;
   verificationTokenExpires?: Date;
+  lastLoginAt: Date
   createdAt: Date;
   updatedAt: Date;
+  comparePassword(candidate: string): Promise<boolean>;
 }
 
 const AddressSchema = new Schema<Address>(
@@ -83,11 +86,23 @@ const UserSchema = new Schema<IUser>(
     avatarUrl: { type: String },
     isVerified: { type: Boolean, required: true, default: false },
     verificationToken: { type: String },
-    verificationTokenExpires: { type: Date }
+    verificationTokenExpires: { type: Date },
+    lastLoginAt: { type: Date, default: Date.now },
   },
   {
     timestamps: true,
   }
 );
+
+UserSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
+
+UserSchema.methods.comparePassword = async function (candidate: string) {
+  return await bcrypt.compare(candidate, this.password);
+};
+
 
 export default mongoose.model<IUser>("User", UserSchema);

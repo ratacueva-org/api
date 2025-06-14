@@ -10,13 +10,20 @@
   "author": "Eduardo Moreno",
   "license": "ISC",
   "dependencies": {
+    "@types/nodemailer": "^6.4.17",
+    "bcrypt": "^6.0.0",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.15.1",
-    "nodemon": "^3.1.10"
+    "nodemailer": "^7.0.3",
+    "nodemon": "^3.1.10",
+    "zod": "^3.25.63"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.9",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   }
