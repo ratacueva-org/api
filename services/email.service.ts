@@ -75,3 +75,19 @@ export const sendPasswordResetEmail = async (toEmail: string, resetToken: string
   `;
   await sendEmail(toEmail, subject, text, html);
 };
+
+export const sendAccountReactivationEmail = async (toEmail: string, reactivationToken: string, userId: string): Promise<void> => {
+  const reactivateLink = `${APP_URL}/api/auth/reactivate-account?token=${reactivationToken}&userId=${userId}`;
+  const subject = 'Reactivación de cuenta';
+  const text = `Hola,\n\nHemos detectado que intentaste registrarte pero tu cuenta estaba marcada como eliminada.\n\nPuedes reactivarla haciendo clic en el siguiente enlace:\n${reactivateLink}\n\nSi no reconoces esta acción, puedes ignorar este mensaje.\n\nSaludos,\nEl equipo de ${APP_NAME}`;
+  const html = `
+    <p>Hola,</p>
+    <p>Hemos detectado que intentaste registrarte pero tu cuenta estaba eliminada.</p>
+    <p>Puedes reactivarla haciendo clic en el siguiente enlace:</p>
+    <p><a href="${reactivateLink}">Reactivar mi cuenta</a></p>
+    <p>Si no reconoces esta acción, puedes ignorar este mensaje.</p>
+    <p>Saludos,<br/>El equipo de ${APP_NAME}</p>
+  `;
+
+  await sendEmail(toEmail, subject, text, html);
+};

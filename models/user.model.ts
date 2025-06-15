@@ -35,8 +35,11 @@ export interface IUser extends Document {
   paymentMethods: PaymentMethod[];
   avatarUrl?: string;
   isVerified: boolean;
+  isDeleted: boolean;
   verificationToken?: string;
   verificationTokenExpires?: Date;
+  passwordResetToken?: string;
+  passwordResetTokenExpires?: Date;
   lastLoginAt: Date
   createdAt: Date;
   updatedAt: Date;
@@ -85,8 +88,11 @@ const UserSchema = new Schema<IUser>(
     paymentMethods: { type: [PaymentMethodSchema], default: [] },
     avatarUrl: { type: String },
     isVerified: { type: Boolean, required: true, default: false },
+    isDeleted: { type: Boolean, default: false },
     verificationToken: { type: String },
     verificationTokenExpires: { type: Date },
+    passwordResetToken: { type: String },
+    passwordResetTokenExpires: { type: Date },
     lastLoginAt: { type: Date, default: Date.now },
   },
   {
