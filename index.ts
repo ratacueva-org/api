@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import connectDB from './config/db';
+import { applySecurityMiddleware } from './middlewares/security.middleware';
 import authRoutes from './routes/auth.routes';
 
 dotenv.config();
@@ -9,8 +10,10 @@ const app = express();
 const PORT: number = parseInt(process.env.PORT || '3000', 10);
 
 app.use(express.json());
-
+applySecurityMiddleware(app);
 connectDB();
+
+app.use('/api/auth', authRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello, World!');

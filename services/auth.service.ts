@@ -133,7 +133,6 @@ export const forgotPassword = async (email: string): Promise<string> => {
     return "Te enviamos un correo con las instrucciones para restablecer tu contraseña.";
 };
 
-
 export const resetPassword = async (token: string, newPassword: string): Promise<string> => {
     const users = await User.find({
         passwordResetToken: { $ne: null },
@@ -161,7 +160,6 @@ export const resetPassword = async (token: string, newPassword: string): Promise
 
     return "Tu contraseña ha sido actualizada correctamente.";
 };
-
 
 export const reactivateAccount = async (token: string): Promise<string> => {
     const users = await User.find({
