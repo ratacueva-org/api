@@ -9,8 +9,8 @@ dotenv.config();
 const app = express();
 const PORT: number = parseInt(process.env.PORT || '3000', 10);
 
-app.use(express.json());
 applySecurityMiddleware(app);
+app.use(express.json());
 connectDB();
 
 app.use('/api/auth', authRoutes);

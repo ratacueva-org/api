@@ -31,7 +31,6 @@ const globalRateLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// 
 // Aplica seguridad global a la app
 export const applySecurityMiddleware = (app: Express) => {
   app.use(helmet());                // Protección de cabeceras
