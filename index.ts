@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import connectDB from './config/db';
 import { applySecurityMiddleware } from './middlewares/security.middleware';
 import authRoutes from './routes/auth.routes';
+import clientRoutes from './routes/client.routes';
 
 dotenv.config();
 
