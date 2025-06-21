@@ -24,7 +24,7 @@ export const changePassword = async (id: string, currentPassword: string, newPas
   if (!user) throw new NotFoundError("Usuario no encontrado");
 
   const isMatch = await user.comparePassword(currentPassword);
-  if (!isMatch) throw new UnauthorizedError("Contraseña actual incorrecta");
+  if (!isMatch) throw new UnauthorizedError("La contraseña actual es incorrecta");
 
   user.password = newPassword;
   await user.save();
@@ -33,6 +33,10 @@ export const changePassword = async (id: string, currentPassword: string, newPas
 export const softDeleteUser = async (id: string) => {
   const user = await User.findById(id);
   if (!user) throw new NotFoundError("Usuario no encontrado");
+
+  if (user.isDeleted) {
+    throw new UnauthorizedError("Esta cuenta ya ha sido eliminada.");
+  }
 
   user.isDeleted = true;
   await user.save();

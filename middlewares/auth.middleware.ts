@@ -5,6 +5,7 @@ import { UnauthorizedError } from "../errors/custom-errors";
 interface JwtPayload {
   id: string;
   role: "client" | "employee" | "admin";
+  name: string;
 }
 
 export interface AuthenticatedRequest extends Request {
