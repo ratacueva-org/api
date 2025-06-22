@@ -1,6 +1,6 @@
 import { Response, NextFunction } from "express";
 import { AuthenticatedRequest } from "./auth.middleware";
-import { ForbiddenError } from "../errors/custom-errors";
+import { ForbiddenError } from "../core/errors/custom-errors";
 
 export const authorize =
   (...allowedRoles: ("client" | "employee" | "admin")[]) =>

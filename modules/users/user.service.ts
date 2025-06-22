@@ -1,7 +1,7 @@
-import User from "../models/user.model";
-import Order from "../models/order.model";
-import { Address, PaymentMethod } from "../models/user.model";
-import { NotFoundError, UnauthorizedError } from "../errors/custom-errors";
+import User from "../../modules/users/user.model";
+import Order from "../orders/order.model";
+import { Address, PaymentMethod } from "../../modules/users/user.model";
+import { NotFoundError, UnauthorizedError } from "../../core/errors/custom-errors";
 
 // Profile methods
 export const getProfileById = async (id: string) => {

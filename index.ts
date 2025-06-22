@@ -3,8 +3,8 @@ import dotenv from 'dotenv';
 import connectDB from './config/db';
 import { applySecurityMiddleware } from './middlewares/security.middleware';
 import { errorHandler } from './middlewares/error.middleware';
-import authRoutes from './routes/auth.routes';
-import clientRoutes from './routes/client.routes';
+import authRoutes from './modules/auth/auth.routes';
+import userRoutes from './modules/users/user.routes';
 
 dotenv.config();
 
@@ -16,7 +16,7 @@ app.use(express.json());
 connectDB();
 
 app.use('/api/auth', authRoutes);
-app.use('/api/client', clientRoutes);
+app.use('/api/user', userRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello, World!');

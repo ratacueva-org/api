@@ -1,11 +1,11 @@
 import mongoose, { Document, Schema } from "mongoose";
-import User, { IUser } from "../models/user.model";
-import { registerSchema, loginSchema } from "../validations/auth.schema";
+import User, { IUser } from "../users/user.model";
+import { registerSchema, loginSchema } from "../auth/auth.schema";
 import jwt, { Secret, SignOptions } from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
-import { AppError, ConflictError, UnauthorizedError, NotFoundError, InternalServerError } from "../errors/custom-errors";
-import { sendVerificationEmail, sendPasswordResetEmail, sendAccountReactivationEmail } from "./email.service";
+import { AppError, ConflictError, UnauthorizedError, NotFoundError, InternalServerError } from "../../core/errors/custom-errors";
+import { sendVerificationEmail, sendPasswordResetEmail, sendAccountReactivationEmail } from "../../services/email.service";
 
 const JWT_SECRET: string = process.env.JWT_SECRET!;
 const JWT_EXPIRES_IN: string = process.env.JWT_EXPIRES_IN || '1h';
