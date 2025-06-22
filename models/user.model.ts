@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 
 export type Role = "client" | "employee" | "admin";
 
-interface Address {
+export interface Address {
   postalCode: string;
   street: string;
   externalNumber?: string;
@@ -15,7 +15,7 @@ interface Address {
   isDefault: boolean;
 }
 
-interface PaymentMethod {
+export interface PaymentMethod {
   type: "credit_card" | "debit_card" | "paypal" | "oxxo_cash";
   last4?: string;
   provider?: string;
