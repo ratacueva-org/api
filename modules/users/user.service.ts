@@ -1,5 +1,5 @@
 import User from "../../modules/users/user.model";
-import Order from "../orders/order.model";
+import * as fileUploadService from "../../services/file-upload.service";
 import { Address, PaymentMethod } from "../../modules/users/user.model";
 import { NotFoundError, UnauthorizedError } from "../../core/errors/custom-errors";
 
@@ -137,14 +137,29 @@ export const deletePaymentMethod = async (userId: string, methodId: string) => {
   await user.save();
 };
 
-// Order history methods
-export const getMyOrders = async (userId: string) => {
-  const orders = await Order.find({ userId }).sort({ createdAt: -1 });
-  return orders;
-};
+export const updateProfilePicture = async (
+  userId: string,
+  fileBuffer: Buffer,
+  originalFileName: string
+): Promise<string> => {
+  const user = await User.findById(userId);
+  if (!user) throw new NotFoundError("Usuario no encontrado.");
 
-export const getOrderDetails = async (userId: string, orderId: string) => {
-  const order = await Order.findOne({ _id: orderId, userId });
-  if (!order) throw new NotFoundError("Orden no encontrada");
-  return order;
+  if (user.avatarUrl) {
+    const segments = user.avatarUrl.split('/');
+    const folderAndId = segments.slice(segments.indexOf('upload') + 2).join('/').split('.')[0];
+    const publicId = `ratacueva/users/${folderAndId}`;
+
+    try {
+      await fileUploadService.deleteFile(publicId);
+    } catch (err) {
+      console.warn(`No se pudo eliminar avatar anterior: ${user.avatarUrl}`, err);
+    }
+  }
+
+  const imageUrl = await fileUploadService.uploadImage(fileBuffer, originalFileName);
+  user.avatarUrl = imageUrl;
+  await user.save();
+
+  return imageUrl;
 };

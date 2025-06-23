@@ -46,6 +46,7 @@ export interface IUser extends Document {
   comparePassword(candidate: string): Promise<boolean>;
 }
 
+// MongoDB schemas for Address and PaymentMethod
 const AddressSchema = new Schema<Address>(
   {
     postalCode: { type: String, required: true },

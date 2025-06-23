@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import { AuthenticatedRequest } from "../../middlewares/auth.middleware";
+import { AuthenticatedRequest } from "../../core/middlewares/auth.middleware";
+import { BadRequestError } from "../../core/errors/custom-errors";
 import * as userService from "../../modules/users/user.service";
 
 // Profile management
@@ -66,13 +67,14 @@ export const deletePaymentMethod = async (req: AuthenticatedRequest, res: Respon
   res.json({ message: "Método de pago eliminado" });
 };
 
-// Order history
-export const getMyOrders = async (req: AuthenticatedRequest, res: Response) => {
-  const orders = await userService.getMyOrders(req.user!.id);
-  res.json(orders);
-};
+export const updateProfilePicture = async (req: AuthenticatedRequest, res: Response) => {
+  if (!req.file) throw new BadRequestError("Archivo no recibido.");
 
-export const getOrderDetails = async (req: AuthenticatedRequest, res: Response) => {
-  const order = await userService.getOrderDetails(req.user!.id, req.params.id);
-  res.json(order);
+  const userId = req.user!.id;
+  const imageUrl = await userService.updateProfilePicture(userId, req.file.buffer, req.file.originalname);
+
+  res.json({
+    message: "Foto de perfil actualizada correctamente",
+    avatarUrl: imageUrl,
+  });
 };

@@ -1,7 +1,8 @@
 import { Router } from "express";
 import * as userController from "../../modules/users/user.controller";
-import { authenticate } from "../../middlewares/auth.middleware";
-import { validate } from "../../middlewares/validate.middleware";
+import { authenticate } from "../../core/middlewares/auth.middleware";
+import { upload } from "../../core/middlewares/upload.middleware";
+import { validate } from "../../core/middlewares/validate.middleware";
 import { updateProfileSchema, changePasswordSchema, addressSchema, paymentMethodSchema } from "../../modules/users/user.schema";
 
 const router = Router();
@@ -11,6 +12,7 @@ router.get("/me", authenticate, userController.getProfile);
 router.patch("/me", authenticate, validate(updateProfileSchema), userController.updateProfile);
 router.patch("/change-password", authenticate, validate(changePasswordSchema), userController.changePassword);
 router.delete("/delete", authenticate, userController.deleteAccount);
+router.put("/upload-avatar", authenticate, upload.single("avatar"), userController.updateProfilePicture);
 
 // Address managements routes
 router.get("/addresses", authenticate, userController.getAddresses);
@@ -23,9 +25,5 @@ router.patch("/addresses/:id/set-default", authenticate, userController.setDefau
 router.get("/payment-methods", authenticate, userController.getPaymentMethods);
 router.post("/payment-methods", authenticate, validate(paymentMethodSchema), userController.addPaymentMethod);
 router.delete("/payment-methods/:id", authenticate, userController.deletePaymentMethod);
-
-// Order history routes
-router.get("/orders", authenticate, userController.getMyOrders);
-router.get("/orders/:id", authenticate, userController.getOrderDetails);
 
 export default router;
