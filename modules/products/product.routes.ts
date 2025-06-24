@@ -1,6 +1,7 @@
 import { Router } from "express";
 import * as productController from "../../modules/products/product.controller";
 import { authenticate } from "../../core/middlewares/auth.middleware";
+import { authorize } from "../../core/middlewares/role.middleware";
 import { upload } from "../../core/middlewares/upload.middleware";
 import { validate } from "../../core/middlewares/validate.middleware";
 import {
@@ -19,10 +20,11 @@ const router = Router();
 router.get("/", productController.getAllProducts);
 router.get("/:id", productController.getProductById);
 
-// Rutas protegidas (solo para admins o panel de gestión)
+// Rutas protegidas (solo empleados y admins)
 router.post(
   "/",
   authenticate,
+  authorize("employee", "admin"),
   upload.array("images"),
   requireImages,
   validate(createProductSchema),
@@ -32,6 +34,7 @@ router.post(
 router.put(
   "/:id",
   authenticate,
+  authorize("employee", "admin"),
   upload.array("images"),
   requireImages,
   validate(updateProductSchema),
@@ -41,6 +44,7 @@ router.put(
 router.patch(
   "/:id/stock",
   authenticate,
+  authorize("employee", "admin"),
   validate(updateStockSchema),
   productController.updateStockProduct
 );
@@ -48,6 +52,7 @@ router.patch(
 router.patch(
   "/:id/discount",
   authenticate,
+  authorize("employee", "admin"),
   validate(updateDiscountSchema),
   productController.updateDiscountProduct
 );
@@ -55,6 +60,7 @@ router.patch(
 router.patch(
   "/:id/is-featured",
   authenticate,
+  authorize("employee", "admin"),
   validate(updateIsFeaturedSchema),
   productController.updateIsFeaturedProduct
 );
@@ -62,10 +68,16 @@ router.patch(
 router.patch(
   "/:id/is-new",
   authenticate,
+  authorize("employee", "admin"),
   validate(updateIsNewSchema),
   productController.updateIsNewProduct
 );
 
-router.delete("/:id", authenticate, productController.deleteProduct);
+router.delete(
+  "/:id",
+  authenticate,
+  authorize("employee", "admin"),
+  productController.deleteProduct
+);
 
 export default router;
