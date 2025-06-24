@@ -17,12 +17,12 @@ import { requireImages } from "../../core/middlewares/requireImages.middleware";
 const router = Router();
 
 // Rutas públicas
-router.get("/", productController.getAllProducts);
-router.get("/:id", productController.getProductById);
+router.get("/get", productController.getAllProducts);
+router.get("/get/:id", productController.getProductById);
 
 // Rutas protegidas (solo empleados y admins)
 router.post(
-  "/",
+  "/add",
   authenticate,
   authorize("employee", "admin"),
   upload.array("images"),
@@ -32,7 +32,7 @@ router.post(
 );
 
 router.put(
-  "/:id",
+  "/update/:id",
   authenticate,
   authorize("employee", "admin"),
   upload.array("images"),
