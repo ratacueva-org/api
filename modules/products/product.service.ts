@@ -143,4 +143,5 @@ export const deleteProduct = async (id: string): Promise<void> => {
   }
 
   await Product.findByIdAndDelete(id);
+
 };
