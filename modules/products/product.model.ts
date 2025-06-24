@@ -78,7 +78,7 @@ export const CategoryValues = {
   COMBOS: "Combos", // Combos
   HEADSETS: "Headsets", // Headsets
   MICROPHONES: "Microphones", // Micrófonos
-  MICE: "Mice", // Mouse
+  MOUSE: "Mouse", // Mouse
   SIMULATION_VR: "Simulation/VR", // Simulación/Realidad Virtual
   MOUSEPADS_WRIST_RESTS: "Mousepads/Wrist Rests", // Mousepads/Reposamuñecas
   KEYBOARDS: "Keyboards", // Teclados
