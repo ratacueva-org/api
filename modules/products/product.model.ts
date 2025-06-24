@@ -174,7 +174,6 @@ export interface IProduct {
   section: SectionType;
   category: CategoryType;
   subcategory?: SubCategoryType;
-  tags?: string[];
   specs?: Record<string, string | number>;
   discountPercentage?: number;
   rating?: number;
@@ -208,7 +207,6 @@ const ProductSchema: Schema<IProduct> = new Schema<IProduct>(
       enum: Object.values(SubCategoryValues),
       required: true,
     },
-    tags: [{ type: String }],
     specs: { type: Schema.Types.Mixed },
     discountPercentage: { type: Number },
     rating: { type: Number },
