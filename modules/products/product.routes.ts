@@ -11,6 +11,7 @@ import {
   updateIsFeaturedSchema,
   updateIsNewSchema,
 } from "../../modules/products/product.schema";
+import { requireImages } from "../../core/middlewares/requireImages.middleware";
 
 const router = Router();
 
@@ -23,6 +24,7 @@ router.post(
   "/",
   authenticate,
   upload.array("images"),
+  requireImages,
   validate(createProductSchema),
   productController.addProduct
 );
@@ -31,6 +33,7 @@ router.put(
   "/:id",
   authenticate,
   upload.array("images"),
+  requireImages,
   validate(updateProductSchema),
   productController.updateProduct
 );
