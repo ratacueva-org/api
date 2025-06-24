@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { AuthenticatedRequest } from "../../core/middlewares/auth.middleware";
 import { BadRequestError } from "../../core/errors/custom-errors";
-import * as productService from "./product.service";
+import * as productService from "../../modules/products/product.service";
 
 export const getProductById = async (req: Request, res: Response) => {
   const product = await productService.getProductById(req.params.id);

@@ -1,7 +1,7 @@
 import { z } from "zod";
+import { SectionValues, CategoryValues, SubCategoryValues } from "./product.model";
 
-import { SectionValues, CategoryValues, SubCategoryValues } from "./product.model"; // Ajusta la ruta si es necesario
-
+// Schema base para producto completo
 export const productSchema = z.object({
   name: z
     .string()
@@ -15,24 +15,13 @@ export const productSchema = z.object({
     .min(10, "La descripción debe tener al menos 10 caracteres.")
     .max(5000, "La descripción no puede exceder 5000 caracteres."),
 
-  price: z
-    .number()
-    .min(0, "El precio no puede ser negativo."),
+  price: z.number().min(0, "El precio no puede ser negativo."),
 
-  stock: z
-    .number()
-    .int("El stock debe ser un número entero.")
-    .min(0, "El stock no puede ser negativo."),
+  stock: z.number().int("El stock debe ser un número entero.").min(0, "El stock no puede ser negativo."),
 
-  brand: z
-    .string()
-    .trim()
-    .max(100, "La marca no puede exceder 100 caracteres.")
-    .optional(),
+  brand: z.string().trim().max(100, "La marca no puede exceder 100 caracteres.").optional(),
 
-  images: z
-    .array(z.string().url("Debe ser una URL válida."))
-    .min(1, "Debe haber al menos una imagen."),
+  images: z.array(z.string().url("Debe ser una URL válida.")).min(1, "Debe haber al menos una imagen."),
 
   section: z.enum(Object.values(SectionValues) as [string, ...string[]], {
     errorMap: () => ({ message: "Sección inválida." }),
@@ -50,7 +39,7 @@ export const productSchema = z.object({
     .record(
       z.union([
         z.string().max(255, "Una especificación no debe exceder 255 caracteres."),
-        z.number()
+        z.number(),
       ])
     )
     .optional(),
@@ -61,13 +50,35 @@ export const productSchema = z.object({
     .max(100, "El descuento no puede ser mayor a 100.")
     .optional(),
 
-  rating: z
-    .number()
-    .min(0)
-    .max(5)
-    .optional(),
+  rating: z.number().min(0).max(5).optional(),
 
   isFeatured: z.boolean().optional(),
   isNew: z.boolean().optional(),
 });
 
+// 🎯 Schema para crear producto (sin campos obligatorios del servidor como _id)
+export const createProductSchema = productSchema.omit({ images: true }); // Las imágenes se manejan aparte con multer
+
+// ✏️ Schema para actualización general (todos los campos opcionales)
+export const updateProductSchema = productSchema.partial();
+
+// 🔧 Schemas específicos de actualización
+
+export const updateStockSchema = z.object({
+  stock: z.number().int().min(0, "El stock no puede ser negativo."),
+});
+
+export const updateDiscountSchema = z.object({
+  discountPercentage: z
+    .number()
+    .min(0, "El descuento no puede ser negativo.")
+    .max(100, "El descuento no puede ser mayor a 100."),
+});
+
+export const updateIsFeaturedSchema = z.object({
+  isFeatured: z.boolean(),
+});
+
+export const updateIsNewSchema = z.object({
+  isNew: z.boolean(),
+});
