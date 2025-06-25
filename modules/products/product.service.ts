@@ -66,26 +66,33 @@ export const updateProduct = async (
   updateData: Partial<IProduct>,
   newImageFiles?: ImageFile[]
 ): Promise<IProduct> => {
-  if (!mongoose.Types.ObjectId.isValid(id))
+  if (!mongoose.Types.ObjectId.isValid(id)) {
     throw new NotFoundError("Producto no encontrado.");
-  const product = await Product.findById(id);
-  if (!product) throw new NotFoundError("Producto no encontrado.");
+  }
 
+  // Si hay archivos nuevos, primero borramos imágenes viejas y subimos las nuevas
   if (newImageFiles && newImageFiles.length > 0) {
-    // Eliminar imágenes viejas
+    const product = await Product.findById(id);
+    if (!product) throw new NotFoundError("Producto no encontrado.");
+
+    // Eliminar imágenes anteriores
     for (const imageUrl of product.images) {
       try {
         const segments = imageUrl.split("/");
-        const folderIndex = segments.findIndex((s) => s === "upload") + 1;
-        const publicIdWithExtension = segments.slice(folderIndex).join("/");
-        const publicId = publicIdWithExtension.split(".")[0];
+        const uploadIndex = segments.findIndex((s) => s === "upload");
+        const versionIndex = uploadIndex + 1;
+
+        const publicIdSegments = segments.slice(versionIndex + 1);
+        const publicIdWithExt = publicIdSegments.join("/");
+        const publicId = publicIdWithExt.split(".")[0];
+
         await fileUploadService.deleteFile(publicId);
       } catch (err) {
         console.warn("No se pudo eliminar imagen anterior:", imageUrl, err);
       }
     }
 
-    // Subir nuevas imágenes con carpeta producto/id
+    // Subir nuevas imágenes y obtener URLs
     const uploadedUrls: string[] = [];
     for (const file of newImageFiles) {
       const publicId = getPublicIdForProductImage(id, file.originalname);
@@ -96,14 +103,19 @@ export const updateProduct = async (
       );
       uploadedUrls.push(url);
     }
-
     updateData.images = uploadedUrls;
   }
 
-  Object.assign(product, updateData);
-  await product.save();
+  // Actualizar sólo los campos necesarios con findByIdAndUpdate y new:true para devolver el documento actualizado
+  const updatedProduct = await Product.findByIdAndUpdate(
+    id,
+    { $set: updateData },
+    { new: true, runValidators: true }
+  );
 
-  return product;
+  if (!updatedProduct) throw new NotFoundError("Producto no encontrado.");
+
+  return updatedProduct;
 };
 
 export const updateStockProduct = async (
@@ -113,6 +125,8 @@ export const updateStockProduct = async (
   const product = await Product.findById(id);
   if (!product) throw new NotFoundError("Producto no encontrado.");
   product.stock = stock;
+  product.updatedAt = new Date();
+  product.markModified("updatedAt");
   await product.save();
   return product;
 };
@@ -124,6 +138,8 @@ export const updateDiscountProduct = async (
   const product = await Product.findById(id);
   if (!product) throw new NotFoundError("Producto no encontrado.");
   product.discountPercentage = discountPercentage;
+  product.updatedAt = new Date();
+  product.markModified("updatedAt");
   await product.save();
   return product;
 };
@@ -135,6 +151,8 @@ export const updateIsFeaturedProduct = async (
   const product = await Product.findById(id);
   if (!product) throw new NotFoundError("Producto no encontrado.");
   product.isFeatured = isFeatured;
+  product.updatedAt = new Date();
+  product.markModified("updatedAt");
   await product.save();
   return product;
 };
@@ -146,6 +164,8 @@ export const updateIsNewProduct = async (
   const product = await Product.findById(id);
   if (!product) throw new NotFoundError("Producto no encontrado.");
   product.isNew = isNew;
+  product.updatedAt = new Date();
+  product.markModified("updatedAt");
   await product.save();
   return product;
 };
