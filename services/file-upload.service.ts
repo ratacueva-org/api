@@ -1,6 +1,6 @@
-import { v2 as cloudinary } from 'cloudinary';
-import { Readable } from 'stream';
-import { InternalServerError } from '../core/errors/custom-errors';
+import { v2 as cloudinary } from "cloudinary";
+import { Readable } from "stream";
+import { InternalServerError } from "../core/errors/custom-errors";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -9,97 +9,107 @@ cloudinary.config({
 });
 
 /**
- * Sube una imagen (buffer) a Cloudinary.
- * @param buffer El buffer del archivo de imagen.
- * @param originalname El nombre original del archivo (para usar como public_id base).
- * @param folder La carpeta en Cloudinary donde se guardará la imagen (opcional, por defecto 'ratacueva').
- * @returns La URL segura de la imagen subida en Cloudinary.
+ * Función genérica para subir un archivo a Cloudinary.
+ * @param buffer Buffer del archivo a subir.
+ * @param originalname Nombre original del archivo para generar el public_id.
+ * @param folder Carpeta destino en Cloudinary.
+ * @param resourceType Tipo de recurso: "image" o "video".
+ * @returns URL segura del archivo subido.
  */
-export const uploadImage = async (buffer: Buffer, originalname: string, folder: string = 'ratacueva'): Promise<string> => {
+const uploadFile = async (
+  buffer: Buffer,
+  originalname: string,
+  folder: string,
+  resourceType: "image" | "video"
+): Promise<string> => {
   return new Promise((resolve, reject) => {
-    // Elimina la extensión del archivo para usar solo el nombre como public_id
-    const publicId = originalname.split('.').slice(0, -1).join('.');
+    const publicId = originalname.split(".").slice(0, -1).join(".");
 
     const uploadStream = cloudinary.uploader.upload_stream(
       {
-        folder: folder,
+        folder,
         public_id: publicId,
         overwrite: true,
-        resource_type: 'image'
+        resource_type: resourceType,
       },
       (error, result) => {
         if (error) {
-          console.error('Cloudinary upload error:', error);
-          return reject(new InternalServerError('Error al subir la imagen al servicio de almacenamiento.'));
+          console.error(`Cloudinary ${resourceType} upload error:`, error);
+          return reject(
+            new InternalServerError(
+              `Error al subir el ${resourceType} al servicio de almacenamiento.`
+            )
+          );
         }
         if (result && result.secure_url) {
           resolve(result.secure_url);
         } else {
-          reject(new InternalServerError('Error: La subida de imagen a Cloudinary no devolvió una URL.'));
+          reject(
+            new InternalServerError(
+              `Error: La subida de ${resourceType} a Cloudinary no devolvió una URL.`
+            )
+          );
         }
       }
     );
 
-    // Convertir el buffer del archivo a un Readable stream y pasarlo a Cloudinary
     const readableStream = new Readable();
     readableStream.push(buffer);
-    readableStream.push(null); // Indica el final del stream
+    readableStream.push(null);
     readableStream.pipe(uploadStream);
   });
 };
 
 /**
- * Elimina un archivo de Cloudinary.
- * @param publicId La ID pública del archivo en Cloudinary (incluyendo la carpeta si se especificó al subirlo).
+ * Subir imagen a Cloudinary (wrapper de uploadFile).
  */
-export const deleteFile = async (publicId: string): Promise<void> => {
-  try {
-    const result = await cloudinary.uploader.destroy(publicId);
-    if (result.result !== 'ok') {
-      console.warn('Cloudinary delete warning:', result);
-      throw new InternalServerError(`No se pudo eliminar el archivo en Cloudinary con ID: ${publicId}`);
-    }
-    console.log(`Archivo ${publicId} eliminado de Cloudinary.`);
-  } catch (error) {
-    console.error('Cloudinary delete error:', error);
-    throw new InternalServerError(`Error al eliminar el archivo ${publicId} del servicio de almacenamiento.`);
-  }
-};
+export const uploadImage = (
+  buffer: Buffer,
+  originalname: string,
+  folder: string = "ratacueva"
+): Promise<string> => uploadFile(buffer, originalname, folder, "image");
 
 /**
- * (Opcional) Sube un video a Cloudinary.
- * @param buffer El buffer del archivo de video.
- * @param originalname El nombre original del archivo.
- * @param folder La carpeta en Cloudinary.
- * @returns La URL segura del video subido.
+ * Subir video a Cloudinary (wrapper de uploadFile).
  */
-export const uploadVideo = async (buffer: Buffer, originalname: string, folder: string = 'ratacueva'): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const publicId = originalname.split('.').slice(0, -1).join('.');
+export const uploadVideo = (
+  buffer: Buffer,
+  originalname: string,
+  folder: string = "ratacueva"
+): Promise<string> => uploadFile(buffer, originalname, folder, "video");
 
-      const uploadStream = cloudinary.uploader.upload_stream(
-        {
-          folder: folder,
-          public_id: publicId,
-          overwrite: true,
-          resource_type: 'video' // Especifica que es un video
-        },
-        (error, result) => {
-          if (error) {
-            console.error('Cloudinary video upload error:', error);
-            return reject(new InternalServerError('Error al subir el video al servicio de almacenamiento.'));
-          }
-          if (result && result.secure_url) {
-            resolve(result.secure_url);
-          } else {
-            reject(new InternalServerError('Error: La subida de video a Cloudinary no devolvió una URL.'));
-          }
-        }
-      );
-
-      const readableStream = new Readable();
-      readableStream.push(buffer);
-      readableStream.push(null);
-      readableStream.pipe(uploadStream);
+/**
+ * Eliminar archivo de Cloudinary por publicId.
+ * @param publicId ID pública del archivo en Cloudinary (incluyendo carpetas).
+ */
+export const deleteFile = async (
+  publicId: string,
+  resourceType: "image" | "video" = "image"
+): Promise<void> => {
+  try {
+    const result = await cloudinary.uploader.destroy(publicId, {
+      resource_type: resourceType,
     });
+
+    if (result.result === "not found") {
+      console.warn(
+        `Cloudinary delete warning: archivo no encontrado para publicId: ${publicId}`
+      );
+      return;
+    }
+
+    if (result.result !== "ok") {
+      console.warn("Cloudinary delete warning:", result);
+      throw new InternalServerError(
+        `No se pudo eliminar el archivo en Cloudinary con ID: ${publicId}`
+      );
+    }
+
+    console.log(`Archivo ${publicId} eliminado de Cloudinary.`);
+  } catch (error) {
+    console.error("Cloudinary delete error:", error);
+    throw new InternalServerError(
+      `Error al eliminar el archivo ${publicId} del servicio de almacenamiento.`
+    );
+  }
 };
