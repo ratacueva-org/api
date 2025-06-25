@@ -15,9 +15,10 @@ export const productSchema = z.object({
     .min(10, "La descripción debe tener al menos 10 caracteres.")
     .max(5000, "La descripción no puede exceder 5000 caracteres."),
 
-  price: z.number().min(0, "El precio no puede ser negativo."),
+  // ✅ Tipos coercitivos
+  price: z.coerce.number().min(0, "El precio no puede ser negativo."),
 
-  stock: z.number().int("El stock debe ser un número entero.").min(0, "El stock no puede ser negativo."),
+  stock: z.coerce.number().int("El stock debe ser un número entero.").min(0, "El stock no puede ser negativo."),
 
   brand: z.string().trim().max(100, "La marca no puede exceder 100 caracteres.").optional(),
 
@@ -44,16 +45,16 @@ export const productSchema = z.object({
     )
     .optional(),
 
-  discountPercentage: z
-    .number()
+  // ✅ Coerce para campos opcionales
+  discountPercentage: z.coerce.number()
     .min(0, "El descuento no puede ser negativo.")
     .max(100, "El descuento no puede ser mayor a 100.")
     .optional(),
 
-  rating: z.number().min(0).max(5).optional(),
+  rating: z.coerce.number().min(0).max(5).optional(),
 
-  isFeatured: z.boolean().optional(),
-  isNew: z.boolean().optional(),
+  isFeatured: z.coerce.boolean().optional(),
+  isNew: z.coerce.boolean().optional(),
 });
 
 // 🎯 Schema para crear producto (sin campos obligatorios del servidor como _id)
@@ -63,22 +64,20 @@ export const createProductSchema = productSchema.omit({ images: true }); // Las 
 export const updateProductSchema = productSchema.partial();
 
 // 🔧 Schemas específicos de actualización
-
 export const updateStockSchema = z.object({
-  stock: z.number().int().min(0, "El stock no puede ser negativo."),
+  stock: z.coerce.number().int().min(0, "El stock no puede ser negativo."),
 });
 
 export const updateDiscountSchema = z.object({
-  discountPercentage: z
-    .number()
+  discountPercentage: z.coerce.number()
     .min(0, "El descuento no puede ser negativo.")
     .max(100, "El descuento no puede ser mayor a 100."),
 });
 
 export const updateIsFeaturedSchema = z.object({
-  isFeatured: z.boolean(),
+  isFeatured: z.coerce.boolean(),
 });
 
 export const updateIsNewSchema = z.object({
-  isNew: z.boolean(),
+  isNew: z.coerce.boolean(),
 });

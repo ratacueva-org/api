@@ -113,6 +113,7 @@ export const SubCategoryValues = {
   STEAM: "Steam Games", // Juegos de Steam
   XBOX: "XBOX Games", // Juegos de XBOX
   PSN: "PSN Games", // Juegos de PSN
+  MICROSOFT: "Microsoft Games", // Juegos de Microsoft
   NINTENDO_SWITCH: "Nintendo Switch Games", // Juegos de Nintendo Switch
   ORIGIN: "Origin Games", // Juegos de Origin
   UBISOFT: "Ubisoft Connect Games", // Juegos de Ubisoft Connect
@@ -157,6 +158,9 @@ export const SubCategoryValues = {
   UNDER_250: "Under MX$250", // Menos de MX$250
   UNDER_500: "Under MX$500", // Menos de MX$500
   OVER_500: "Over MX$500", // Más de MX$500
+
+  // No Subcategorie
+  NOT_APPLICABLE: "Not Applicable"
 } as const;
 
 export type SubCategoryType =
@@ -205,7 +209,7 @@ const ProductSchema: Schema<IProduct> = new Schema<IProduct>(
     subcategory: {
       type: String,
       enum: Object.values(SubCategoryValues),
-      required: true,
+      required: false,
     },
     specs: { type: Schema.Types.Mixed },
     discountPercentage: { type: Number },

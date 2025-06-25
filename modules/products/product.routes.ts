@@ -74,7 +74,7 @@ router.patch(
 );
 
 router.delete(
-  "/:id",
+  "/delete/:id",
   authenticate,
   authorize("employee", "admin"),
   productController.deleteProduct
