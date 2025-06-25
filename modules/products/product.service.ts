@@ -9,8 +9,11 @@ interface ImageFile {
 }
 
 // Helper para generar publicId con carpeta para Cloudinary
-const getPublicIdForProductImage = (productId: string | null, originalname: string) => {
-  const fileNameWithoutExt = originalname.split('.').slice(0, -1).join('.');
+const getPublicIdForProductImage = (
+  productId: string | null,
+  originalname: string
+) => {
+  const fileNameWithoutExt = originalname.split(".").slice(0, -1).join(".");
   if (productId) {
     return `ratacueva/products/${productId}/${fileNameWithoutExt}`;
   } else {
@@ -19,7 +22,8 @@ const getPublicIdForProductImage = (productId: string | null, originalname: stri
 };
 
 export const getProductById = async (id: string): Promise<IProduct> => {
-  if (!mongoose.Types.ObjectId.isValid(id)) throw new NotFoundError("Producto no encontrado.");
+  if (!mongoose.Types.ObjectId.isValid(id))
+    throw new NotFoundError("Producto no encontrado.");
   const product = await Product.findById(id);
   if (!product) throw new NotFoundError("Producto no encontrado.");
   return product;
@@ -37,7 +41,11 @@ export const addProduct = async (
   const uploadedUrls: string[] = [];
   for (const file of imageFiles) {
     const publicId = getPublicIdForProductImage(null, file.originalname);
-    const url = await fileUploadService.uploadImage(file.buffer, file.originalname, publicId);
+    const url = await fileUploadService.uploadImage(
+      file.buffer,
+      file.originalname,
+      publicId
+    );
     uploadedUrls.push(url);
   }
 
@@ -58,7 +66,8 @@ export const updateProduct = async (
   updateData: Partial<IProduct>,
   newImageFiles?: ImageFile[]
 ): Promise<IProduct> => {
-  if (!mongoose.Types.ObjectId.isValid(id)) throw new NotFoundError("Producto no encontrado.");
+  if (!mongoose.Types.ObjectId.isValid(id))
+    throw new NotFoundError("Producto no encontrado.");
   const product = await Product.findById(id);
   if (!product) throw new NotFoundError("Producto no encontrado.");
 
@@ -67,7 +76,7 @@ export const updateProduct = async (
     for (const imageUrl of product.images) {
       try {
         const segments = imageUrl.split("/");
-        const folderIndex = segments.findIndex(s => s === "upload") + 1;
+        const folderIndex = segments.findIndex((s) => s === "upload") + 1;
         const publicIdWithExtension = segments.slice(folderIndex).join("/");
         const publicId = publicIdWithExtension.split(".")[0];
         await fileUploadService.deleteFile(publicId);
@@ -80,7 +89,11 @@ export const updateProduct = async (
     const uploadedUrls: string[] = [];
     for (const file of newImageFiles) {
       const publicId = getPublicIdForProductImage(id, file.originalname);
-      const url = await fileUploadService.uploadImage(file.buffer, file.originalname, publicId);
+      const url = await fileUploadService.uploadImage(
+        file.buffer,
+        file.originalname,
+        publicId
+      );
       uploadedUrls.push(url);
     }
 
@@ -93,7 +106,10 @@ export const updateProduct = async (
   return product;
 };
 
-export const updateStockProduct = async (id: string, stock: number): Promise<IProduct> => {
+export const updateStockProduct = async (
+  id: string,
+  stock: number
+): Promise<IProduct> => {
   const product = await Product.findById(id);
   if (!product) throw new NotFoundError("Producto no encontrado.");
   product.stock = stock;
@@ -101,7 +117,10 @@ export const updateStockProduct = async (id: string, stock: number): Promise<IPr
   return product;
 };
 
-export const updateDiscountProduct = async (id: string, discountPercentage: number): Promise<IProduct> => {
+export const updateDiscountProduct = async (
+  id: string,
+  discountPercentage: number
+): Promise<IProduct> => {
   const product = await Product.findById(id);
   if (!product) throw new NotFoundError("Producto no encontrado.");
   product.discountPercentage = discountPercentage;
@@ -109,7 +128,10 @@ export const updateDiscountProduct = async (id: string, discountPercentage: numb
   return product;
 };
 
-export const updateIsFeaturedProduct = async (id: string, isFeatured: boolean): Promise<IProduct> => {
+export const updateIsFeaturedProduct = async (
+  id: string,
+  isFeatured: boolean
+): Promise<IProduct> => {
   const product = await Product.findById(id);
   if (!product) throw new NotFoundError("Producto no encontrado.");
   product.isFeatured = isFeatured;
@@ -117,7 +139,10 @@ export const updateIsFeaturedProduct = async (id: string, isFeatured: boolean): 
   return product;
 };
 
-export const updateIsNewProduct = async (id: string, isNew: boolean): Promise<IProduct> => {
+export const updateIsNewProduct = async (
+  id: string,
+  isNew: boolean
+): Promise<IProduct> => {
   const product = await Product.findById(id);
   if (!product) throw new NotFoundError("Producto no encontrado.");
   product.isNew = isNew;
@@ -125,23 +150,37 @@ export const updateIsNewProduct = async (id: string, isNew: boolean): Promise<IP
   return product;
 };
 
+// Función utilitaria para extraer el publicId de la URL de Cloudinary
+function getPublicIdFromUrl(url: string): string {
+  const segments = url.split("/");
+  const uploadIndex = segments.findIndex((s) => s === "upload");
+  if (uploadIndex === -1) throw new Error("URL inválida de Cloudinary");
+
+  // Excluir 'upload' y la versión 'vXXXXX'
+  const publicIdSegments = segments.slice(uploadIndex + 2);
+  const publicIdWithExtension = publicIdSegments.join("/");
+
+  // Eliminar extensión (.png, .jpg, etc)
+  return publicIdWithExtension.split(".").slice(0, -1).join(".");
+}
+
 export const deleteProduct = async (id: string): Promise<void> => {
   const product = await Product.findById(id);
   if (!product) throw new NotFoundError("Producto no encontrado.");
 
-  // Eliminar imágenes en Cloudinary
   for (const imageUrl of product.images) {
     try {
-      const segments = imageUrl.split("/");
-      const folderIndex = segments.findIndex(s => s === "upload") + 1;
-      const publicIdWithExtension = segments.slice(folderIndex).join("/");
-      const publicId = publicIdWithExtension.split(".")[0];
+      const publicId = getPublicIdFromUrl(imageUrl);
       await fileUploadService.deleteFile(publicId);
     } catch (err) {
-      console.warn("No se pudo eliminar imagen al borrar producto:", imageUrl, err);
+      // Solo un warning para que no rompa el flujo si la imagen no existe
+      console.warn(
+        "No se pudo eliminar imagen al borrar producto:",
+        imageUrl,
+        err
+      );
     }
   }
 
   await Product.findByIdAndDelete(id);
-
 };
