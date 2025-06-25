@@ -36,7 +36,15 @@ export const productSchema = z.object({
   images: z
     .array(z.string().url("Debe ser una URL válida."))
     .min(1, "Debe haber al menos una imagen."),
-  videos: z.array(z.string().url("Debe ser una URL válida.")).optional(), // videos opcionales
+  videos: z
+    .union([z.string().optional(), z.array(z.string())])
+    .transform((val) => {
+      if (!val) return [];
+      if (typeof val === "string") {
+        return val.trim() === "" ? [] : [val];
+      }
+      return val;
+    }),
 
   section: z.enum(Object.values(SectionValues) as [string, ...string[]], {
     errorMap: () => ({ message: "Sección inválida." }),

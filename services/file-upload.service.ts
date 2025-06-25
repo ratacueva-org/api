@@ -82,21 +82,29 @@ export const uploadVideo = (
  * Eliminar archivo de Cloudinary por publicId.
  * @param publicId ID pública del archivo en Cloudinary (incluyendo carpetas).
  */
-export const deleteFile = async (publicId: string): Promise<void> => {
+export const deleteFile = async (
+  publicId: string,
+  resourceType: "image" | "video" = "image"
+): Promise<void> => {
   try {
-    const result = await cloudinary.uploader.destroy(publicId);
+    const result = await cloudinary.uploader.destroy(publicId, {
+      resource_type: resourceType,
+    });
+
     if (result.result === "not found") {
       console.warn(
         `Cloudinary delete warning: archivo no encontrado para publicId: ${publicId}`
       );
       return;
     }
+
     if (result.result !== "ok") {
       console.warn("Cloudinary delete warning:", result);
       throw new InternalServerError(
         `No se pudo eliminar el archivo en Cloudinary con ID: ${publicId}`
       );
     }
+
     console.log(`Archivo ${publicId} eliminado de Cloudinary.`);
   } catch (error) {
     console.error("Cloudinary delete error:", error);

@@ -43,8 +43,10 @@ export const updateProduct = async (
     | { [fieldname: string]: Express.Multer.File[] }
     | undefined;
 
+  // Unir imágenes y videos, si hay archivos
   const allFiles = [...(filesObj?.images ?? []), ...(filesObj?.videos ?? [])];
 
+  // Mapear solo si hay archivos nuevos, sino undefined para que no sobreescriba
   const mediaFiles =
     allFiles.length > 0
       ? allFiles.map((file) => ({
@@ -54,15 +56,21 @@ export const updateProduct = async (
         }))
       : undefined;
 
-  const updatedProduct = await productService.updateProduct(
-    req.params.id,
-    req.body,
-    mediaFiles
-  );
-  res.json({
-    message: "Producto actualizado exitosamente",
-    product: updatedProduct,
-  });
+  try {
+    const updatedProduct = await productService.updateProduct(
+      req.params.id,
+      req.body,
+      mediaFiles
+    );
+
+    res.json({
+      message: "Producto actualizado exitosamente",
+      product: updatedProduct,
+    });
+  } catch (error) {
+    // Manejo básico de errores, puedes mejorarlo con tu middleware de errores
+    res.status(500).json({ message: "Error actualizando producto", error });
+  }
 };
 
 export const updateStockProduct = async (
