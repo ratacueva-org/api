@@ -1,15 +1,16 @@
 import mongoose from "mongoose";
-import Product, { IProduct } from "../../modules/products/product.model"; // Ajusta la ruta a tu modelo
+import Product, { IProduct } from "../../modules/products/product.model";
 import * as fileUploadService from "../../services/file-upload.service";
 import { NotFoundError } from "../../core/errors/custom-errors";
 
-interface ImageFile {
+interface MediaFile {
   buffer: Buffer;
   originalname: string;
+  mimetype: string; // Para saber si es image o video
 }
 
 // Helper para generar publicId con carpeta para Cloudinary
-const getPublicIdForProductImage = (
+const getPublicIdForProductFile = (
   productId: string | null,
   originalname: string
 ) => {
@@ -19,6 +20,19 @@ const getPublicIdForProductImage = (
   } else {
     return `ratacueva/products/temp/${fileNameWithoutExt}`;
   }
+};
+
+// Helper para extraer publicId desde url de Cloudinary (imágenes o videos)
+const getPublicIdFromUrl = (url: string): string => {
+  const segments = url.split("/");
+  const uploadIndex = segments.findIndex((s) => s === "upload");
+  if (uploadIndex === -1) throw new Error("URL inválida de Cloudinary");
+
+  // Saltar "upload" y la versión (p.ej. v1234567)
+  const publicIdSegments = segments.slice(uploadIndex + 2);
+  const publicIdWithExtension = publicIdSegments.join("/");
+  // Quitar extensión
+  return publicIdWithExtension.split(".").slice(0, -1).join(".");
 };
 
 export const getProductById = async (id: string): Promise<IProduct> => {
@@ -35,78 +49,87 @@ export const getAllProducts = async (): Promise<IProduct[]> => {
 
 export const addProduct = async (
   productData: Partial<IProduct>,
-  imageFiles: ImageFile[]
+  mediaFiles: MediaFile[]
 ): Promise<IProduct> => {
-  // Subir imágenes a carpeta temporal
-  const uploadedUrls: string[] = [];
-  for (const file of imageFiles) {
-    const publicId = getPublicIdForProductImage(null, file.originalname);
-    const url = await fileUploadService.uploadImage(
-      file.buffer,
-      file.originalname,
-      publicId
-    );
-    uploadedUrls.push(url);
+  const imageUrls: string[] = [];
+  const videoUrls: string[] = [];
+
+  for (const file of mediaFiles) {
+    const publicId = getPublicIdForProductFile(null, file.originalname);
+    const resourceType = file.mimetype.startsWith("video") ? "video" : "image";
+
+    const url = await (resourceType === "image"
+      ? fileUploadService.uploadImage(file.buffer, file.originalname, publicId)
+      : fileUploadService.uploadVideo(
+          file.buffer,
+          file.originalname,
+          publicId
+        ));
+
+    if (resourceType === "image") {
+      imageUrls.push(url);
+    } else {
+      videoUrls.push(url);
+    }
   }
 
   const newProduct = new Product({
     ...productData,
-    images: uploadedUrls,
+    images: imageUrls,
+    videos: videoUrls, // <-- asigna aquí el arreglo de videos
   });
 
   await newProduct.save();
-
-  // Opcional: podrías reubicar imágenes aquí si quieres
-
   return newProduct;
 };
 
 export const updateProduct = async (
   id: string,
   updateData: Partial<IProduct>,
-  newImageFiles?: ImageFile[]
+  newMediaFiles?: MediaFile[]
 ): Promise<IProduct> => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     throw new NotFoundError("Producto no encontrado.");
   }
 
-  // Si hay archivos nuevos, primero borramos imágenes viejas y subimos las nuevas
-  if (newImageFiles && newImageFiles.length > 0) {
+  if (newMediaFiles && newMediaFiles.length > 0) {
     const product = await Product.findById(id);
     if (!product) throw new NotFoundError("Producto no encontrado.");
 
-    // Eliminar imágenes anteriores
-    for (const imageUrl of product.images) {
+    // Eliminar archivos anteriores (imágenes o videos)
+    for (const url of product.images) {
       try {
-        const segments = imageUrl.split("/");
-        const uploadIndex = segments.findIndex((s) => s === "upload");
-        const versionIndex = uploadIndex + 1;
-
-        const publicIdSegments = segments.slice(versionIndex + 1);
-        const publicIdWithExt = publicIdSegments.join("/");
-        const publicId = publicIdWithExt.split(".")[0];
-
+        const publicId = getPublicIdFromUrl(url);
         await fileUploadService.deleteFile(publicId);
       } catch (err) {
-        console.warn("No se pudo eliminar imagen anterior:", imageUrl, err);
+        console.warn("No se pudo eliminar archivo anterior:", url, err);
       }
     }
 
-    // Subir nuevas imágenes y obtener URLs
+    // Subir nuevos archivos
     const uploadedUrls: string[] = [];
-    for (const file of newImageFiles) {
-      const publicId = getPublicIdForProductImage(id, file.originalname);
-      const url = await fileUploadService.uploadImage(
-        file.buffer,
-        file.originalname,
-        publicId
-      );
+    for (const file of newMediaFiles) {
+      const publicId = getPublicIdForProductFile(id, file.originalname);
+      const resourceType = file.mimetype.startsWith("video")
+        ? "video"
+        : "image";
+      const url = await (resourceType === "image"
+        ? fileUploadService.uploadImage(
+            file.buffer,
+            file.originalname,
+            publicId
+          )
+        : fileUploadService.uploadVideo(
+            file.buffer,
+            file.originalname,
+            publicId
+          ));
       uploadedUrls.push(url);
     }
+
     updateData.images = uploadedUrls;
   }
 
-  // Actualizar sólo los campos necesarios con findByIdAndUpdate y new:true para devolver el documento actualizado
   const updatedProduct = await Product.findByIdAndUpdate(
     id,
     { $set: updateData },
@@ -170,35 +193,16 @@ export const updateIsNewProduct = async (
   return product;
 };
 
-// Función utilitaria para extraer el publicId de la URL de Cloudinary
-function getPublicIdFromUrl(url: string): string {
-  const segments = url.split("/");
-  const uploadIndex = segments.findIndex((s) => s === "upload");
-  if (uploadIndex === -1) throw new Error("URL inválida de Cloudinary");
-
-  // Excluir 'upload' y la versión 'vXXXXX'
-  const publicIdSegments = segments.slice(uploadIndex + 2);
-  const publicIdWithExtension = publicIdSegments.join("/");
-
-  // Eliminar extensión (.png, .jpg, etc)
-  return publicIdWithExtension.split(".").slice(0, -1).join(".");
-}
-
 export const deleteProduct = async (id: string): Promise<void> => {
   const product = await Product.findById(id);
   if (!product) throw new NotFoundError("Producto no encontrado.");
 
-  for (const imageUrl of product.images) {
+  for (const url of product.images) {
     try {
-      const publicId = getPublicIdFromUrl(imageUrl);
+      const publicId = getPublicIdFromUrl(url);
       await fileUploadService.deleteFile(publicId);
     } catch (err) {
-      // Solo un warning para que no rompa el flujo si la imagen no existe
-      console.warn(
-        "No se pudo eliminar imagen al borrar producto:",
-        imageUrl,
-        err
-      );
+      console.warn("No se pudo eliminar archivo al borrar producto:", url, err);
     }
   }
 

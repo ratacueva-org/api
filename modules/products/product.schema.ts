@@ -1,5 +1,9 @@
 import { z } from "zod";
-import { SectionValues, CategoryValues, SubCategoryValues } from "./product.model";
+import {
+  SectionValues,
+  CategoryValues,
+  SubCategoryValues,
+} from "./product.model";
 
 // Schema base para producto completo
 export const productSchema = z.object({
@@ -18,11 +22,21 @@ export const productSchema = z.object({
   // ✅ Tipos coercitivos
   price: z.coerce.number().min(0, "El precio no puede ser negativo."),
 
-  stock: z.coerce.number().int("El stock debe ser un número entero.").min(0, "El stock no puede ser negativo."),
+  stock: z.coerce
+    .number()
+    .int("El stock debe ser un número entero.")
+    .min(0, "El stock no puede ser negativo."),
 
-  brand: z.string().trim().max(100, "La marca no puede exceder 100 caracteres.").optional(),
+  brand: z
+    .string()
+    .trim()
+    .max(100, "La marca no puede exceder 100 caracteres.")
+    .optional(),
 
-  images: z.array(z.string().url("Debe ser una URL válida.")).min(1, "Debe haber al menos una imagen."),
+  images: z
+    .array(z.string().url("Debe ser una URL válida."))
+    .min(1, "Debe haber al menos una imagen."),
+  videos: z.array(z.string().url("Debe ser una URL válida.")).optional(), // videos opcionales
 
   section: z.enum(Object.values(SectionValues) as [string, ...string[]], {
     errorMap: () => ({ message: "Sección inválida." }),
@@ -32,21 +46,26 @@ export const productSchema = z.object({
     errorMap: () => ({ message: "Categoría inválida." }),
   }),
 
-  subcategory: z.enum(Object.values(SubCategoryValues) as [string, ...string[]], {
-    errorMap: () => ({ message: "Subcategoría inválida." }),
-  }).optional(),
+  subcategory: z
+    .enum(Object.values(SubCategoryValues) as [string, ...string[]], {
+      errorMap: () => ({ message: "Subcategoría inválida." }),
+    })
+    .optional(),
 
   specs: z
     .record(
       z.union([
-        z.string().max(255, "Una especificación no debe exceder 255 caracteres."),
+        z
+          .string()
+          .max(255, "Una especificación no debe exceder 255 caracteres."),
         z.number(),
       ])
     )
     .optional(),
 
   // ✅ Coerce para campos opcionales
-  discountPercentage: z.coerce.number()
+  discountPercentage: z.coerce
+    .number()
     .min(0, "El descuento no puede ser negativo.")
     .max(100, "El descuento no puede ser mayor a 100.")
     .optional(),
@@ -69,7 +88,8 @@ export const updateStockSchema = z.object({
 });
 
 export const updateDiscountSchema = z.object({
-  discountPercentage: z.coerce.number()
+  discountPercentage: z.coerce
+    .number()
     .min(0, "El descuento no puede ser negativo.")
     .max(100, "El descuento no puede ser mayor a 100."),
 });

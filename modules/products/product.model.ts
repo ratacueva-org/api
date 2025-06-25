@@ -160,7 +160,7 @@ export const SubCategoryValues = {
   OVER_500: "Over MX$500", // Más de MX$500
 
   // No Subcategorie
-  NOT_APPLICABLE: "Not Applicable"
+  NOT_APPLICABLE: "Not Applicable",
 } as const;
 
 export type SubCategoryType =
@@ -175,6 +175,7 @@ export interface IProduct {
   stock: number;
   brand?: string;
   images: string[];
+  videos?: string[]; // nuevo campo para videos
   section: SectionType;
   category: CategoryType;
   subcategory?: SubCategoryType;
@@ -196,6 +197,7 @@ const ProductSchema: Schema<IProduct> = new Schema<IProduct>(
     stock: { type: Number, required: true },
     brand: { type: String },
     images: { type: [String], required: true },
+    videos: { type: [String], required: false }, // videos como opcional
     section: {
       type: String,
       enum: Object.values(SectionValues),
