@@ -6,6 +6,7 @@ import { errorHandler } from './core/middlewares/error.middleware';
 import authRoutes from './modules/auth/auth.routes';
 import userRoutes from './modules/users/user.routes';
 import productRoutes from './modules/products/product.routes';
+import reviewRoutes from './modules/reviews/review.routes';
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ connectDB();
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/reviews', reviewRoutes)
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello, World!');

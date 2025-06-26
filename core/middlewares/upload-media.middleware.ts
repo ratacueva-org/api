@@ -34,7 +34,7 @@ const multerInstance = multer({
 });
 
 // Middleware para recibir varios campos (imágenes y videos)
-export const uploadProductMedia = multerInstance.fields([
+export const uploadMedia = multerInstance.fields([
   { name: "images", maxCount: 5 }, // máximo 5 imágenes
   { name: "videos", maxCount: 2 }, // máximo 2 videos
 ]);

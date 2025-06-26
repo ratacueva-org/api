@@ -3,7 +3,7 @@ import * as productController from "../../modules/products/product.controller";
 import { authenticate } from "../../core/middlewares/auth.middleware";
 import { authorize } from "../../core/middlewares/role.middleware";
 // Importa el middleware específico para imágenes + videos
-import { uploadProductMedia } from "../../core/middlewares/upload-media.middleware";
+import { uploadMedia } from "../../core/middlewares/upload-media.middleware";
 import { validate } from "../../core/middlewares/validate.middleware";
 import {
   createProductSchema,
@@ -27,7 +27,7 @@ router.post(
   "/",
   authenticate,
   authorize("employee", "admin"),
-  uploadProductMedia, // <-- Aquí usas el middleware con imagen + video
+  uploadMedia, // <-- Aquí usas el middleware con imagen + video
   requireImages,
   validate(createProductSchema),
   productController.addProduct
@@ -37,7 +37,7 @@ router.put(
   "/:id",
   authenticate,
   authorize("employee", "admin"),
-  uploadProductMedia, // <-- También aquí
+  uploadMedia, // <-- También aquí
   requireImages,
   validate(updateProductSchema),
   productController.updateProduct
