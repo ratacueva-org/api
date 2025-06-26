@@ -62,6 +62,11 @@ export const addPaymentMethod = async (req: AuthenticatedRequest, res: Response)
   res.status(201).json({ message: "Método de pago agregado", methods });
 };
 
+export const updatePaymentMethod = async (req: AuthenticatedRequest, res: Response) => {
+  const method = await userService.updatePaymentMethod(req.user!.id, req.params.id, req.body);
+  res.json({ message: "Método de pago actualizado", method });
+};
+
 export const deletePaymentMethod = async (req: AuthenticatedRequest, res: Response) => {
   await userService.deletePaymentMethod(req.user!.id, req.params.id);
   res.json({ message: "Método de pago eliminado" });

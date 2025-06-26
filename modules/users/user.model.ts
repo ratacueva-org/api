@@ -59,7 +59,7 @@ const AddressSchema = new Schema<Address>(
     country: { type: String, required: true },
     isDefault: { type: Boolean, default: false },
   },
-  { _id: false }
+  // { _id: false }
 );
 
 const PaymentMethodSchema = new Schema<PaymentMethod>(
@@ -69,7 +69,7 @@ const PaymentMethodSchema = new Schema<PaymentMethod>(
     provider: { type: String },
     expiration: { type: String },
   },
-  { _id: false }
+  // { _id: false }
 );
 
 const UserSchema = new Schema<IUser>(

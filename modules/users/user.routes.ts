@@ -3,7 +3,7 @@ import * as userController from "../../modules/users/user.controller";
 import { authenticate } from "../../core/middlewares/auth.middleware";
 import { upload } from "../../core/middlewares/upload.middleware";
 import { validate } from "../../core/middlewares/validate.middleware";
-import { updateProfileSchema, changePasswordSchema, addressSchema, paymentMethodSchema } from "../../modules/users/user.schema";
+import { updateProfileSchema, changePasswordSchema, addressSchema, paymentMethodSchema, partialAddressSchema, partialPaymentMethodSchema } from "../../modules/users/user.schema";
 
 const router = Router();
 
@@ -17,13 +17,14 @@ router.put("/upload-avatar", authenticate, upload.single("avatar"), userControll
 // Address managements routes
 router.get("/addresses", authenticate, userController.getAddresses);
 router.post("/addresses", authenticate, validate(addressSchema), userController.addAddress);
-router.patch("/addresses/:id", authenticate, validate(addressSchema), userController.updateAddress);
+router.patch("/addresses/:id", authenticate, validate(partialAddressSchema), userController.updateAddress);
 router.delete("/addresses/:id", authenticate, userController.deleteAddress);
 router.patch("/addresses/:id/set-default", authenticate, userController.setDefaultAddress);
 
 // Payment methods routes
 router.get("/payment-methods", authenticate, userController.getPaymentMethods);
 router.post("/payment-methods", authenticate, validate(paymentMethodSchema), userController.addPaymentMethod);
+router.patch("/payment-methods/:id", authenticate, validate(partialPaymentMethodSchema), userController.updatePaymentMethod);
 router.delete("/payment-methods/:id", authenticate, userController.deletePaymentMethod);
 
 export default router;

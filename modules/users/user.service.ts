@@ -126,6 +126,23 @@ export const addPaymentMethod = async (userId: string, method: PaymentMethod) =>
   return user.paymentMethods;
 };
 
+export const updatePaymentMethod = async (
+  userId: string,
+  methodId: string,
+  newData: Partial<PaymentMethod>
+) => {
+  const user = await User.findById(userId);
+  if (!user) throw new NotFoundError("Usuario no encontrado");
+
+  const method = user.paymentMethods.find((m: any) => m._id?.toString() === methodId);
+
+  if (!method) throw new NotFoundError("Método de pago no encontrado");
+
+  Object.assign(method, newData);
+  await user.save();
+  return method;
+};
+
 export const deletePaymentMethod = async (userId: string, methodId: string) => {
   const user = await User.findById(userId);
   if (!user) throw new NotFoundError("Usuario no encontrado");

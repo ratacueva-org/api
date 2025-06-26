@@ -87,6 +87,9 @@ export const addressSchema = z.object({
   isDefault: z.boolean().optional(),
 });
 
+// Partial address schema for updates
+export const partialAddressSchema = addressSchema.partial();
+
 // Payment methods
 export const paymentMethodSchema = z.object({
   type: z.enum(["credit_card", "debit_card", "paypal", "oxxo_cash"], {
@@ -109,3 +112,6 @@ export const paymentMethodSchema = z.object({
     .regex(/^(0[1-9]|1[0-2])\/\d{2}$/, "La expiración debe tener el formato MM/YY.")
     .optional(),
 });
+
+// Partial payment method schema for updates
+export const partialPaymentMethodSchema = paymentMethodSchema.partial();
