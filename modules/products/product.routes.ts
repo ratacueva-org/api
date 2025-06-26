@@ -19,12 +19,12 @@ import { requireImages } from "../../core/middlewares/requireImages.middleware";
 const router = Router();
 
 // Rutas públicas
-router.get("/get", productController.getAllProducts);
-router.get("/get/:id", productController.getProductById);
+router.get("/", productController.getAllProducts);
+router.get("/:id", productController.getProductById);
 
 // Rutas protegidas (solo empleados y admins)
 router.post(
-  "/add",
+  "/",
   authenticate,
   authorize("employee", "admin"),
   uploadProductMedia, // <-- Aquí usas el middleware con imagen + video
@@ -34,7 +34,7 @@ router.post(
 );
 
 router.put(
-  "/update/:id",
+  "/:id",
   authenticate,
   authorize("employee", "admin"),
   uploadProductMedia, // <-- También aquí
@@ -76,7 +76,7 @@ router.patch(
 );
 
 router.delete(
-  "/delete/:id",
+  "/:id",
   authenticate,
   authorize("employee", "admin"),
   productController.deleteProduct
