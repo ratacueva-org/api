@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import { AuthenticatedRequest } from "../../core/middlewares/auth.middleware";
-import { BadRequestError, NotFoundError } from "../../core/errors/custom-errors";
+import {
+  BadRequestError,
+  NotFoundError,
+} from "../../core/errors/custom-errors";
 import * as reviewService from "./review.service";
 
 // GET una reseña por ID
@@ -16,7 +19,10 @@ export const getAllReviews = async (_req: Request, res: Response) => {
 };
 
 // POST nueva reseña
-export const createReview = async (req: AuthenticatedRequest, res: Response) => {
+export const createReview = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
   const filesObj = req.files as
     | { [fieldname: string]: Express.Multer.File[] }
     | undefined;
@@ -30,13 +36,16 @@ export const createReview = async (req: AuthenticatedRequest, res: Response) => 
   }));
 
   const user = req.user;
+  console.log("Usuario en request:", user);
   if (!user) throw new BadRequestError("Usuario no autenticado");
+
+  const userName = `${user.name} ${user.lastName ?? ""}`.trim();
 
   const review = await reviewService.createReview(
     {
       ...req.body,
       user: user.id,
-      userName: user.name,
+      userName,
     },
     mediaFiles
   );
@@ -45,7 +54,10 @@ export const createReview = async (req: AuthenticatedRequest, res: Response) => 
 };
 
 // PUT actualizar reseña
-export const updateReview = async (req: AuthenticatedRequest, res: Response) => {
+export const updateReview = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
   const filesObj = req.files as
     | { [fieldname: string]: Express.Multer.File[] }
     | undefined;
@@ -67,11 +79,17 @@ export const updateReview = async (req: AuthenticatedRequest, res: Response) => 
     mediaFiles
   );
 
-  res.json({ message: "Reseña actualizada exitosamente", review: updatedReview });
+  res.json({
+    message: "Reseña actualizada exitosamente",
+    review: updatedReview,
+  });
 };
 
 // DELETE eliminar reseña
-export const deleteReview = async (req: AuthenticatedRequest, res: Response) => {
+export const deleteReview = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
   await reviewService.deleteReview(req.params.id);
   res.json({ message: "Reseña eliminada exitosamente" });
 };

@@ -6,6 +6,7 @@ interface JwtPayload {
   id: string;
   role: "client" | "employee" | "admin";
   name: string;
+  lastName: string;
 }
 
 export interface AuthenticatedRequest extends Request {
