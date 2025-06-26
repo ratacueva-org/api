@@ -182,6 +182,7 @@ export interface IProduct {
   specs?: Record<string, string | number>;
   discountPercentage?: number;
   rating?: number;
+  reviewCount?: number; // <-- Nuevo campo para las reviews
   createdAt: Date;
   updatedAt: Date;
   isFeatured?: boolean;
