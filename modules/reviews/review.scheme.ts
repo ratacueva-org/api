@@ -9,7 +9,7 @@ export const CreateReviewSchema = z.object({
   product: objectId, // viene del cliente (ruta o body)
   rating: z
     .number()
-    .refine((val) => val >= 0.5 && val <= 5 && val * 2 === Math.floor(val * 2), {
+    .refine((val) => val >= 0.0 && val <= 5 && val * 2 === Math.floor(val * 2), {
       message: "El rating debe estar entre 0.5 y 5, en incrementos de 0.5",
     }),
   text: z.string().max(1000).optional(),
