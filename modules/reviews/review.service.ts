@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { ConflictError } from "../../core/errors/custom-errors";
 import Review, { IReview } from "../../modules/reviews/review.model";
 import Product from "../../modules/products/product.model";
 import * as fileUploadService from "../../services/file-upload.service";
@@ -55,6 +56,16 @@ export const createReview = async (
   reviewData: Partial<IReview>,
   mediaFiles: MediaFile[]
 ): Promise<IReview> => {
+  // Validar si ya existe una review de este usuario para este producto
+  const existingReview = await Review.findOne({
+    product: reviewData.product,
+    user: reviewData.user,
+  });
+
+  if (existingReview) {
+    throw new ConflictError("Ya has dejado una reseña para este producto.");
+  }
+
   // Primero subimos las imágenes y videos a Cloudinary, guardamos URLs
   const imageUrls: string[] = [];
   const videoUrls: string[] = [];
@@ -63,13 +74,18 @@ export const createReview = async (
     const publicId = getPublicIdForReviewFile(null, file.originalname);
     const resourceType = file.mimetype.startsWith("video") ? "video" : "image";
 
-    const url = await (resourceType === "image"
-      ? fileUploadService.uploadImage(file.buffer, file.originalname, publicId)
-      : fileUploadService.uploadVideo(
-          file.buffer,
-          file.originalname,
-          publicId
-        ));
+    const url =
+      resourceType === "image"
+        ? await fileUploadService.uploadImage(
+            file.buffer,
+            file.originalname,
+            publicId
+          )
+        : await fileUploadService.uploadVideo(
+            file.buffer,
+            file.originalname,
+            publicId
+          );
 
     if (resourceType === "image") imageUrls.push(url);
     else videoUrls.push(url);
@@ -83,8 +99,10 @@ export const createReview = async (
   });
 
   await newReview.save();
+
   // Actualizamos el rating del producto
-  await updateProductRating(newReview.product.toString())
+  await updateProductRating(newReview.product.toString());
+
   return newReview;
 };
 
@@ -155,6 +173,9 @@ export const updateReview = async (
     updateData.videos = uploadedVideosUrls;
   }
 
+  // ✅ Actualizar updatedAt explícitamente
+  updateData.updatedAt = new Date();
+
   const updatedReview = await Review.findByIdAndUpdate(
     id,
     { $set: updateData },
@@ -162,8 +183,10 @@ export const updateReview = async (
   );
 
   if (!updatedReview) throw new NotFoundError("Reseña no encontrada.");
+
   // ✅ Recalcular el rating del producto
   await updateProductRating(updatedReview.product.toString());
+
   return updatedReview;
 };
 
@@ -208,9 +231,9 @@ const updateProductRating = async (productId: string): Promise<void> => {
       $group: {
         _id: "$product",
         avgRating: { $avg: "$rating" },
-        count: { $sum: 1 }
-      }
-    }
+        count: { $sum: 1 },
+      },
+    },
   ]);
 
   if (result.length === 0) {
