@@ -3,7 +3,6 @@ import * as reviewController from "./review.controller";
 import { authenticate } from "../../core/middlewares/auth.middleware";
 import { authorize } from "../../core/middlewares/role.middleware";
 import { uploadMedia } from "../../core/middlewares/upload-media.middleware";
-import { authorizeReviewOwner } from "../../core/middlewares/authorizeReviewOwner.middleware";
 import { validate } from "../../core/middlewares/validate.middleware";
 import {
   CreateReviewSchema,
@@ -31,7 +30,6 @@ router.put(
   "/:id",
   authenticate,
   authorize("client"), // Solo clientes pueden hacer update
-  authorizeReviewOwner, // Solo si es el dueño
   uploadMedia,
   validate(ReviewSchema),
   reviewController.updateReview
@@ -42,7 +40,6 @@ router.delete(
   "/:id",
   authenticate,
   authorize("client", "admin"), // Clientes o admins
-  authorizeReviewOwner, // Cliente solo si es dueño, admin siempre puede
   reviewController.deleteReview
 );
 

@@ -36,7 +36,6 @@ export const createReview = async (
   }));
 
   const user = req.user;
-  console.log("Usuario en request:", user);
   if (!user) throw new BadRequestError("Usuario no autenticado");
 
   const userName = `${user.name} ${user.lastName ?? ""}`.trim();
