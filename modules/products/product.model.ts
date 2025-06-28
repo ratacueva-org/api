@@ -43,7 +43,7 @@ export const CategoryValues = {
   MOTHERBOARDS: "Motherboards", // Tarjetas Madre
   PROCESSORS: "Processors", // Procesadores
   RAM_MEMORY: "RAM Memory", // Memoria RAM
-  HARD_DRIVES: "Hard Drives", // Discos Duros
+  HDD: "Hard Disk Drive", // Discos Duros
   SSD: "Solid State Drives", // Unidades de Estado Sólido
   GRAPHICS_CARDS: "Graphics Cards", // Tarjetas Gráficas
   POWER_SUPPLIES: "Power Supplies", // Fuentes de Poder
