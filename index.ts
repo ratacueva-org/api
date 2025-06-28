@@ -7,7 +7,6 @@ import authRoutes from './modules/auth/auth.routes';
 import userRoutes from './modules/users/user.routes';
 import productRoutes from './modules/products/product.routes';
 import reviewRoutes from './modules/reviews/review.routes';
-
 import cartRoutes from './modules/cart/cart.routes';
 
 dotenv.config();
@@ -23,7 +22,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/reviews', reviewRoutes)
-
 app.use('/api/cart', cartRoutes);
 
 app.get('/', (req: Request, res: Response) => {
