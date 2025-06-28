@@ -105,7 +105,7 @@ export const updateProduct = async (
     const product = await Product.findById(id);
     if (!product) throw new NotFoundError("Producto no encontrado.");
 
-    // ✅ Eliminar archivos anteriores (imágenes y videos con su tipo correspondiente)
+    // Eliminar archivos anteriores (imágenes y videos con su tipo correspondiente)
     const allOldFiles = [
       ...(product.images || []).map((url) => ({
         url,
@@ -126,7 +126,7 @@ export const updateProduct = async (
       }
     }
 
-    // ✅ Subir nuevos archivos y separar URLs por tipo
+    // Subir nuevos archivos y separar URLs por tipo
     const uploadedImagesUrls: string[] = [];
     const uploadedVideosUrls: string[] = [];
 
