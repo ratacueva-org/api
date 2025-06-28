@@ -167,8 +167,8 @@ export type SubCategoryType =
   (typeof SubCategoryValues)[keyof typeof SubCategoryValues];
 
 // Main Product Model
-export interface IProduct {
-  _id: number;
+export interface IProduct extends Document {
+  _id: string | mongoose.Types.ObjectId;
   name: string;
   description: string;
   price: number;
@@ -185,7 +185,7 @@ export interface IProduct {
   createdAt: Date;
   updatedAt: Date;
   isFeatured?: boolean;
-  isNew?: boolean;
+  isNewProduct?: boolean; // renamed to avoid conflict with mongoose.Document's isNew
 }
 
 // MongoDB Schema for Product
@@ -217,7 +217,7 @@ const ProductSchema: Schema<IProduct> = new Schema<IProduct>(
     discountPercentage: { type: Number },
     rating: { type: Number },
     isFeatured: { type: Boolean, default: false },
-    isNew: { type: Boolean, default: false },
+    isNewProduct: { type: Boolean, default: false }, // renamed to match interface
   },
   {
     timestamps: true,
