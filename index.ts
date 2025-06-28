@@ -8,7 +8,7 @@ import userRoutes from './modules/users/user.routes';
 import productRoutes from './modules/products/product.routes';
 import reviewRoutes from './modules/reviews/review.routes';
 import cartRoutes from './modules/cart/cart.routes';
-import pcBuildRoutes from './modules/pc-build/pc-build.routes';
+import buildPcRoutes from './modules/pc-build/build-pc.routes';
 
 dotenv.config();
 
@@ -24,7 +24,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/reviews', reviewRoutes)
 app.use('/api/cart', cartRoutes);
-app.use('/api/pc-build', pcBuildRoutes);
+app.use('/api/pc-build', buildPcRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello, World!');

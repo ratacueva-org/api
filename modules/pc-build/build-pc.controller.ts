@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { AuthenticatedRequest } from "../../core/middlewares/auth.middleware";
-import { addPcBuildToCart, AddPcBuildInput } from "./pc-build.service";
+import { addBuildPcToCart, AddBuildPcInput } from "./build-pc.service";
 import { z } from "zod";
 
-const addPcBuildSchema = z.object({
+const addBuildPcSchema = z.object({
   products: z
     .array(
       z.object({
@@ -14,17 +14,17 @@ const addPcBuildSchema = z.object({
     .min(1, "Debes agregar al menos un producto"),
 });
 
-export const addPcBuild = async (req: AuthenticatedRequest, res: Response) => {
-  const parseResult = addPcBuildSchema.safeParse(req.body);
+export const addBuildPc = async (req: AuthenticatedRequest, res: Response) => {
+  const parseResult = addBuildPcSchema.safeParse(req.body);
   if (!parseResult.success) {
     res.status(400).json({ errors: parseResult.error.errors });
     return;
   }
 
-  const input: AddPcBuildInput = parseResult.data;
+  const input: AddBuildPcInput = parseResult.data;
 
   try {
-    await addPcBuildToCart(req.user!.id, input);
+    await addBuildPcToCart(req.user!.id, input);
     res
       .status(201)
       .json({ message: "Build agregada al carrito correctamente." });

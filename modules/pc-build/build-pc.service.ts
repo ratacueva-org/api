@@ -1,16 +1,16 @@
 import * as cartService from "../cart/cart.service";
 import { BadRequestError } from "../../core/errors/custom-errors";
 
-export interface PcBuildProduct {
+export interface BuildPcProduct {
   productId: string;
   quantity?: number; // opcional, por default 1
 }
 
-export interface AddPcBuildInput {
-  products: PcBuildProduct[];
+export interface AddBuildPcInput {
+  products: BuildPcProduct[];
 }
 
-export const addPcBuildToCart = async (userId: string, input: AddPcBuildInput) => {
+export const addBuildPcToCart = async (userId: string, input: AddBuildPcInput) => {
   const { products } = input;
 
   if (!products || products.length === 0) {
