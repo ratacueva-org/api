@@ -8,6 +8,7 @@ import userRoutes from './modules/users/user.routes';
 import productRoutes from './modules/products/product.routes';
 import reviewRoutes from './modules/reviews/review.routes';
 import cartRoutes from './modules/cart/cart.routes';
+import orderRoutes from './modules/orders/order.routes';
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/reviews', reviewRoutes)
 app.use('/api/cart', cartRoutes);
+app.use('/api/orders', orderRoutes)
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello, World!');
