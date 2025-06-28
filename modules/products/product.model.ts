@@ -13,6 +13,9 @@ export const SectionValues = {
   CABLES_ADAPTERS: "Cables & Adapters", // Cables y Adaptadores
   POWER: "Power", // Energía
   NETWORKING: "Networking", // Redes
+
+  // Services
+  SERVICES: "Services",
 } as const;
 
 export type SectionType = (typeof SectionValues)[keyof typeof SectionValues];
@@ -103,6 +106,10 @@ export const CategoryValues = {
   WIFI_EXTENDERS: "Wi-Fi Extenders", // Extensores de Wi-Fi
   ROUTERS: "Routers", // Routers
   SWITCHES: "Switches", // Switches
+
+  // Services
+  YES: "Yes",
+  NO: "No",
 } as const;
 
 export type CategoryType = (typeof CategoryValues)[keyof typeof CategoryValues];

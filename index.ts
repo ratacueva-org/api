@@ -24,7 +24,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/reviews', reviewRoutes)
 app.use('/api/cart', cartRoutes);
-app.use('/api/pc-build', buildPcRoutes);
+app.use('/api/build-pc', buildPcRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello, World!');
