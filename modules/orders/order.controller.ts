@@ -1,7 +1,6 @@
-// src/modules/orders/order.controller.ts
 import { Request, Response, NextFunction } from "express";
-import { AuthenticatedRequest } from "../../core/middlewares/auth.middleware"; // Ajusta la ruta si es necesario
-import { OrderService } from "./order.service"; // Asegúrate de la ruta correcta
+import { AuthenticatedRequest } from "../../core/middlewares/auth.middleware";
+import { OrderService } from "./order.service";
 
 export const OrderController = {
   /**
