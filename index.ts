@@ -9,6 +9,7 @@ import productRoutes from './modules/products/product.routes';
 import reviewRoutes from './modules/reviews/review.routes';
 import cartRoutes from './modules/cart/cart.routes';
 import buildPcRoutes from './modules/pc-build/build-pc.routes';
+import favoritesRoutes from './modules/favorites/favorites.routes'
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/reviews', reviewRoutes)
 app.use('/api/cart', cartRoutes);
 app.use('/api/build-pc', buildPcRoutes);
+app.use('/api/favorites', favoritesRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello, World!');
