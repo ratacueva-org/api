@@ -34,6 +34,7 @@ export interface IUser extends Document {
   addresses: Address[];
   paymentMethods: PaymentMethod[];
   avatarUrl?: string;
+  favorites: mongoose.Types.ObjectId[]; // Lista de favoritos
   isVerified: boolean;
   isDeleted: boolean;
   verificationToken?: string;
@@ -88,6 +89,7 @@ const UserSchema = new Schema<IUser>(
     addresses: { type: [AddressSchema], default: [] },
     paymentMethods: { type: [PaymentMethodSchema], default: [] },
     avatarUrl: { type: String },
+    favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product", default: [] }],
     isVerified: { type: Boolean, required: true, default: false },
     isDeleted: { type: Boolean, default: false },
     verificationToken: { type: String },
