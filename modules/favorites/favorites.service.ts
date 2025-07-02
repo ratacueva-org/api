@@ -31,6 +31,23 @@ export const addFavorite = async (userId: string, productId: string) => {
 };
 
 export const removeFavorite = async (userId: string, productId: string) => {
+  if (!mongoose.Types.ObjectId.isValid(productId)) {
+    throw new BadRequestError("ID de producto inválido");
+  }
+
+  const user = await User.findById(userId).select("favorites");
+
+  if (!user) {
+    throw new BadRequestError("Usuario no encontrado");
+  }
+
+  const productObjectId = new mongoose.Types.ObjectId(productId);
+
+  const isFavorite = user.favorites.includes(productObjectId);
+  if (!isFavorite) {
+    throw new BadRequestError("El producto no está en favoritos");
+  }
+
   await User.findByIdAndUpdate(userId, {
     $pull: { favorites: productId },
   });
