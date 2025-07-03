@@ -1,4 +1,3 @@
-// src/modules/shipping/shipping.schema.ts
 import { z } from 'zod';
 import { ShipmentStatus } from './shipping.model'; // Importa el enum del modelo
 import { addressSchema } from '../users/user.schema'; // Importa el esquema de dirección
