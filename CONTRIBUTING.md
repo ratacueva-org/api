@@ -7,7 +7,7 @@
 Simple y directo:
 
 1.  Crea tu **rama** desde `main`.
-2.  Haz **commits** en inglés (conventional commits).
+2.  Haz **commits** en inglés con conventional commits.
 3.  Abre un **pull request (PR)**.
 4.  Obtén **aprobación**.
 5.  **Mergea** y listo.
@@ -20,21 +20,19 @@ Simple y directo:
 
 | Prefijo     | Uso                | Ejemplos                    |
 | :---------- | :----------------- | :-------------------------- |
-| `feat/`  | Nuevas funciones   | `feature/user-onboarding`   |
-| `fix/`   | Corrección de bugs | `bugfix/login-validation`   |
+| `feat/`     | Nuevas funciones   | `feat/user-onboarding`      |
+| `fix/`      | Corrección de bugs | `fix/login-validation`      |
 | `refactor/` | Mejoras de código  | `refactor/database-queries` |
-| `chore/`    | Mantenimiento      | `chore/update-dependencies` |
 | `docs/`     | Documentación      | `docs/api-endpoints`        |
 
 ### Commits (tipo: asunto)
 
 | Tipo        | Descripción                 | Ejemplo                            |
 | :---------- | :-------------------------- | :--------------------------------- |
-| `feat:`     | Nuevas funciones            | `feat: Implement user auth`        |
-| `fix:`      | Corrección de bugs          | `fix: Correct cart calc error`     |
-| `refactor:` | Reestructuración del código | `refactor: Modularize order logic` |
-| `chore:`    | Mantenimiento               | `chore: Update Node.js version`    |
-| `docs:`     | Cambios en la documentación | `docs: Update install guide`       |
+| `feat:`     | Nuevas funciones            | `feat: implement user auth`        |
+| `fix:`      | Corrección de bugs          | `fix: correct cart calc error`     |
+| `refactor:` | Reestructuración del código | `refactor: modularize order logic` |
+| `docs:`     | Cambios en la documentación | `docs: update install guide`       |
 
 ---
 
@@ -60,12 +58,13 @@ Simple y directo:
 
 3.  **Trabaja y haz commits:**
 
-    - Desarrolla tu código.
-    - Haz commits **pequeños y lógicos** con conventional commits.
+    - Desarrolla tu código
+    - Haz commits **pequeños y frecuentes**
+    - Usa conventional commits
 
     ```bash
     git add .
-    git commit -m "feat: Add save button"
+    git commit -m "feat: add save button"
     ```
 
 4.  **Envía tu rama a GitHub:**
@@ -87,21 +86,17 @@ Simple y directo:
 
 ---
 
-## ✅ Requisitos del PR
+## ✅ Para mergear necesitas:
 
-Para mergear tu PR:
-
-- **Aprobación:** De un miembro del equipo.
-- **Sin conflictos:** Con `main`.
-- **Documentación:** Actualizada si es necesario.
-- **Nomenclatura correcta:** Ramas y commits.
+- ✅ **Aprobación** de un miembro del equipo
+- ✅ **Sin conflictos** con `main`
+- ✅ **Nomenclatura correcta** (ramas y commits)
+- ✅ **Documentación** actualizada (si aplica)
 
 ---
 
 ## 💬 Revisión
 
-- **Tiempo:** Revisores intentarán responder en **menos de 48 horas**.
-- **Feedback:** Sé constructivo.
 - **Actualiza:** Si te piden cambios, responde y actualiza tu PR.
 
 ---
