@@ -1,3 +1,102 @@
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Address:
+ *       type: object
+ *       properties:
+ *         postalCode:
+ *           type: string
+ *         street:
+ *           type: string
+ *         externalNumber:
+ *           type: string
+ *         internalNumber:
+ *           type: string
+ *         neighborhood:
+ *           type: string
+ *         city:
+ *           type: string
+ *         state:
+ *           type: string
+ *         country:
+ *           type: string
+ *         isDefault:
+ *           type: boolean
+ *     PaymentMethod:
+ *       type: object
+ *       properties:
+ *         type:
+ *           type: string
+ *           enum: [credit_card, debit_card, paypal, oxxo_cash]
+ *         last4:
+ *           type: string
+ *         provider:
+ *           type: string
+ *         expiration:
+ *           type: string
+ *     RegisterUserInput:
+ *       type: object
+ *       required:
+ *         - name
+ *         - lastName
+ *         - secondLastName
+ *         - email
+ *         - password
+ *       properties:
+ *         name:
+ *           type: string
+ *           description: The user's name.
+ *         lastName:
+ *           type: string
+ *           description: The user's last name.
+ *         secondLastName:
+ *           type: string
+ *           description: The user's second last name.
+ *         email:
+ *           type: string
+ *           format: email
+ *           description: The user's email.
+ *         password:
+ *           type: string
+ *           format: password
+ *           description: The user's password.
+ *         phone:
+ *           type: string
+ *           description: The user's phone number.
+ *         addresses:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Address'
+ *         paymentMethods:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/PaymentMethod'
+ *     LoginUserInput:
+ *       type: object
+ *       required:
+ *         - email
+ *         - password
+ *       properties:
+ *         email:
+ *           type: string
+ *           format: email
+ *         password:
+ *           type: string
+ *           format: password
+ *     ResetPasswordInput:
+ *       type: object
+ *       required:
+ *         - token
+ *         - newPassword
+ *       properties:
+ *         token:
+ *           type: string
+ *         newPassword:
+ *           type: string
+ *           format: password
+ */
 import { z } from "zod";
 
 export const addressSchema = z.object({

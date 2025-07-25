@@ -1,4 +1,94 @@
+
 import { z } from "zod";
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         name:
+ *           type: string
+ *         lastName:
+ *           type: string
+ *         secondLastName:
+ *           type: string
+ *         email:
+ *           type: string
+ *           format: email
+ *         phone:
+ *           type: string
+ *         role:
+ *           type: string
+ *           enum: [user, admin]
+ *         addresses:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Address'
+ *         paymentMethods:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/PaymentMethod'
+ *     UpdateProfileInput:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *         lastName:
+ *           type: string
+ *         secondLastName:
+ *           type: string
+ *         phone:
+ *           type: string
+ *     ChangePasswordInput:
+ *       type: object
+ *       required:
+ *         - currentPassword
+ *         - newPassword
+ *       properties:
+ *         currentPassword:
+ *           type: string
+ *           format: password
+ *         newPassword:
+ *           type: string
+ *           format: password
+ *     PartialAddress:
+ *       type: object
+ *       properties:
+ *         postalCode:
+ *           type: string
+ *         street:
+ *           type: string
+ *         externalNumber:
+ *           type: string
+ *         internalNumber:
+ *           type: string
+ *         neighborhood:
+ *           type: string
+ *         city:
+ *           type: string
+ *         state:
+ *           type: string
+ *         country:
+ *           type: string
+ *         isDefault:
+ *           type: boolean
+ *     PartialPaymentMethod:
+ *       type: object
+ *       properties:
+ *         type:
+ *           type: string
+ *           enum: [credit_card, debit_card, paypal, oxxo_cash]
+ *         last4:
+ *           type: string
+ *         provider:
+ *           type: string
+ *         expiration:
+ *           type: string
+ */
 
 // Profile management
 export const updateProfileSchema = z.object({
