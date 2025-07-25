@@ -12,6 +12,8 @@ import orderRoutes from './modules/orders/order.routes';
 import buildPcRoutes from './modules/pc-build/build-pc.routes';
 import favoritesRoutes from './modules/favorites/favorites.routes'
 import shippingRoutes from './modules/shipping/shipping.routes';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSetup from './docs/swagger';
 
 dotenv.config();
 
@@ -31,6 +33,7 @@ app.use('/api/orders', orderRoutes)
 app.use('/api/build-pc', buildPcRoutes);
 app.use('/api/favorites', favoritesRoutes);
 app.use('/api/shipping', shippingRoutes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSetup));
 
 app.get('/', (req: Request, res: Response) => {
   res.send('API Rest del e-commerce gamer Ratacueva');
