@@ -17,6 +17,8 @@ import {
   ConflictError,
   ForbiddenError,
 } from "../../core/errors/custom-errors";
+import * as userService from '../users/user.service';
+import { shippingService } from '../shipping/shipping.service';
 
 // --- INTERFACES DE INPUT PARA EL SERVICIO ---
 
@@ -28,7 +30,7 @@ interface IOrderItemInput {
 }
 
 // Lo que el cliente envía para el método de pago inicial
-interface ICreateOrderPaymentInput {
+interface OrderPaymentInput {
   type: "credit_card" | "debit_card" | "paypal" | "oxxo_cash";
   // Aquí irían tokens, IDs de aprobación de PayPal, etc.
   // Por simplicidad, asumimos que el PaymentService recibe esto y devuelve el transactionId
@@ -39,9 +41,9 @@ interface ICreateOrderPaymentInput {
 // Payload completo para crear un pedido
 interface ICreateOrderPayload {
   items: IOrderItemInput[];
-  shippingAddress: Address;
+  shippingAddress?: Address;
   billingAddress?: Address; // Opcional, si es diferente a la de envío
-  paymentMethod: ICreateOrderPaymentInput;
+  paymentMethod: OrderPaymentInput;
   shippingCost: number; // Asumimos que esto ya fue calculado por el frontend/shipping service
   taxAmount: number; // Asumimos que esto ya fue calculado
   discountAmount?: number; // Si se aplicó un cupón
