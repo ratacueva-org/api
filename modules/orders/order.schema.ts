@@ -32,7 +32,7 @@ const createOrderPaymentInputSchema = z.object({
 // Esquema para el payload de creación de orden (Directamente req.body)
 export const createOrderSchema = z.object({
   items: z.array(orderItemInputSchema).min(1, "El pedido debe contener al menos un producto."),
-  shippingAddress: addressZodSchema,
+  shippingAddress: addressZodSchema.optional(),
   billingAddress: addressZodSchema.optional(),
   paymentMethod: createOrderPaymentInputSchema,  shippingCost: z.number().min(0, "El costo de envío no puede ser negativo."),
   taxAmount: z.number().min(0, "El monto de impuestos no puede ser negativo."),

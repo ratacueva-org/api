@@ -1,9 +1,9 @@
 import { z } from 'zod';
-import { ShipmentStatus } from './shipping.model'; // Importa el enum del modelo
-import { addressSchema } from '../users/user.schema'; // Importa el esquema de dirección
+import { ShipmentStatus } from './shipping.model';
+import { addressSchema } from '../users/user.schema';
 
 export const CreateShipmentSchema = z.object({
-    orderId: z.string().min(1, "El ID del pedido es requerido."), // Asume que es un string de ObjectId
+    orderId: z.string().min(1, "El ID del pedido es requerido."),
     shippingAddress: addressSchema,
     items: z.array(z.object({
         productId: z.string().min(1, "El ID del producto es requerido."),
