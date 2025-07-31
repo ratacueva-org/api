@@ -1,4 +1,10 @@
 import { Router } from "express";
+import * as userController from "../../modules/users/user.controller";
+import { authenticate } from "../../core/middlewares/auth.middleware";
+import { upload } from "../../core/middlewares/upload.middleware";
+import { validate } from "../../core/middlewares/validate.middleware";
+import { updateProfileSchema, changePasswordSchema, addressSchema, paymentMethodSchema, partialAddressSchema, partialPaymentMethodSchema } from "../../modules/users/user.schema";
+import { authorize } from "../../core/middlewares/role.middleware";
 
 /**
  * @swagger
@@ -6,13 +12,18 @@ import { Router } from "express";
  *   name: Users
  *   description: User management and profile-related endpoints
  */
-import * as userController from "../../modules/users/user.controller";
-import { authenticate } from "../../core/middlewares/auth.middleware";
-import { upload } from "../../core/middlewares/upload.middleware";
-import { validate } from "../../core/middlewares/validate.middleware";
-import { updateProfileSchema, changePasswordSchema, addressSchema, paymentMethodSchema, partialAddressSchema, partialPaymentMethodSchema } from "../../modules/users/user.schema";
+
 
 const router = Router();
+
+// Ruta protegida: solo 'employee' o 'admin'
+router.get(
+    '/dashboard',
+    authenticate,
+    authorize('employee', 'admin'),
+    userController.getUserDashboard
+);
+
 
 // Profile management routes
 

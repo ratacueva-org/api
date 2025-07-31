@@ -34,7 +34,7 @@ Esta API se encarga de gestionar los productos, usuarios, órdenes y la lógica 
 
     ```env
     # Puerto del servidor
-    PORT=3000
+    PORT=3001
 
     # Base de Datos
     MONGO_URI=tu_string_de_conexion_a_mongodb

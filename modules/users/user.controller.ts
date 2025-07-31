@@ -1,7 +1,18 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { AuthenticatedRequest } from "../../core/middlewares/auth.middleware";
 import { BadRequestError } from "../../core/errors/custom-errors";
 import * as userService from "../../modules/users/user.service";
+
+export const getUserDashboard = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  try {
+    const { name, role } = req.user!;
+    res.status(200).json({
+      message: `Bienvenido al dashboard, ${name}. Tu rol es ${role}.`,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 // Profile management
 export const getProfile = async (req: AuthenticatedRequest, res: Response) => {

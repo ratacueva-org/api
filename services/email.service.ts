@@ -7,7 +7,7 @@ const EMAIL_PORT: number = parseInt(process.env.EMAIL_PORT as string, 10);
 const EMAIL_USER: string = process.env.EMAIL_USER as string;
 const EMAIL_PASS: string = process.env.EMAIL_PASS as string;
 const APP_NAME: string = process.env.APP_NAME || 'Ratacueva';
-const APP_URL: string = process.env.APP_URL || 'http://localhost:3000';
+const APP_URL: string = process.env.APP_URL || 'http://localhost:3001';
 
 let transporter: Transporter;
 
