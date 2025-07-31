@@ -5,6 +5,7 @@ import { Express } from "express";
 
 const allowedOrigins = [
   "http://localhost:3000",           // Frontend local
+  "http://localhost:3001",           // Swagger docs
   "https://app.ratacueva.com",       // Froducción
   "https://admin.ratacueva.com"      // Panel de admin
 ];
