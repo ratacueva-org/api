@@ -19,7 +19,11 @@ const swaggerDefinition = {
   servers: [
     {
       url: "http://localhost:3000",
-      description: "Development server",
+      description: "Frontend dev",
+    },
+    {
+      url: "http://localhost:3001",
+      description: "API + Swagger docs",
     },
     {
       url: "http://ratacueva-api.onrender.com",
