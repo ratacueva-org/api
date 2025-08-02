@@ -20,6 +20,15 @@ export const getProfile = async (req: AuthenticatedRequest, res: Response) => {
   res.json(user);
 };
 
+export const getEmployees = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  try {
+    const employees = await userService.getUsersByRole("employee");
+    res.json(employees);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const updateProfile = async (req: AuthenticatedRequest, res: Response) => {
   const updatedUser = await userService.updateProfileById(req.user!.id, req.body);
   res.json({ message: "Perfil actualizado correctamente", user: updatedUser });
@@ -35,6 +44,18 @@ export const deleteAccount = async (req: AuthenticatedRequest, res: Response) =>
   await userService.softDeleteUser(req.user!.id);
   res.json({ message: "Cuenta eliminada correctamente" });
 };
+
+export const deleteUserById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.params.id;
+    await userService.softDeleteUser(userId);
+    res.json({ message: "Usuario eliminado correctamente" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
 
 // Address management
 export const getAddresses = async (req: AuthenticatedRequest, res: Response) => {

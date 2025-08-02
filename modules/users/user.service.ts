@@ -10,6 +10,13 @@ export const getProfileById = async (id: string) => {
   return user;
 };
 
+export const getUsersByRole = async (role: string) => {
+  return await User.find(
+    { role, isDeleted: false },
+    "id name lastName secondLastName email phone role addresses"
+  );
+};
+
 export const updateProfileById = async (
   id: string,
   data: { name?: string; lastName?: string; secondLastName?: string; phone?: string }
@@ -33,17 +40,16 @@ export const changePassword = async (id: string, currentPassword: string, newPas
   await user.save();
 };
 
-export const softDeleteUser = async (id: string) => {
-  const user = await User.findById(id);
-  if (!user) throw new NotFoundError("Usuario no encontrado");
-
-  if (user.isDeleted) {
-    throw new UnauthorizedError("Esta cuenta ya ha sido eliminada.");
+export const softDeleteUser = async (userId: string) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new Error("Usuario no encontrado");
   }
 
   user.isDeleted = true;
   await user.save();
 };
+
 
 // Address methods
 export const getAddresses = async (userId: string) => {

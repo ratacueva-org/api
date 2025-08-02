@@ -77,6 +77,30 @@ router.patch("/me", authenticate, validate(updateProfileSchema), userController.
 
 /**
  * @swagger
+ * /api/users/employees:
+ *   get:
+ *     summary: Get all employees (admin only)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of employees
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ */
+router.get("/employees", authenticate, authorize("admin"), userController.getEmployees);
+
+/**
+ * @swagger
  * /api/users/change-password:
  *   patch:
  *     summary: Change user password
@@ -114,6 +138,34 @@ router.patch("/change-password", authenticate, validate(changePasswordSchema), u
  *         description: Unauthorized
  */
 router.delete("/delete", authenticate, userController.deleteAccount);
+
+/**
+ * @swagger
+ * /api/users/{id}:
+ *   delete:
+ *     summary: Delete user by ID (admin only)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The user ID
+ *     responses:
+ *       200:
+ *         description: User deleted successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       404:
+ *         description: User not found
+ */
+router.delete("/:id", authenticate, authorize("admin"), userController.deleteUserById);
+
 
 /**
  * @swagger
