@@ -83,3 +83,8 @@ export const updateProfilePicture = async (req: AuthenticatedRequest, res: Respo
     avatarUrl: imageUrl,
   });
 };
+
+export const getEmployees = async (req: Request, res: Response) => {
+  const employees = await userService.getEmployees();
+  res.json(employees);
+};
