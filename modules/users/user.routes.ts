@@ -12,7 +12,34 @@ import { upload } from "../../core/middlewares/upload.middleware";
 import { validate } from "../../core/middlewares/validate.middleware";
 import { updateProfileSchema, changePasswordSchema, addressSchema, paymentMethodSchema, partialAddressSchema, partialPaymentMethodSchema } from "../../modules/users/user.schema";
 
+import { authorize } from "../../core/middlewares/role.middleware";
+
 const router = Router();
+
+/**
+ * @swagger
+ * /api/users/employees:
+ *   get:
+ *     summary: Get all employee users
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: A list of employee users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ */
+router.get("/employees", authenticate, authorize("admin"), userController.getEmployees);
+
 
 // Profile management routes
 

@@ -180,3 +180,8 @@ export const updateProfilePicture = async (
 
   return imageUrl;
 };
+
+export const getEmployees = async () => {
+  const employees = await User.find({ role: "employee" }).select("-password");
+  return employees;
+};
