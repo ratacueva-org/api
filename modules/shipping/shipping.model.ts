@@ -42,6 +42,14 @@ const ShippingAddressSchema: Schema = new Schema({
     city: { type: String, required: true },
     state: { type: String, required: true },
     country: { type: String, required: true },
+
+    // Nuevos campos agregados
+    fullAddress: { type: String, required: true },
+    locality: { type: String, required: true },
+    deliveryInstructions: { type: String },
+    addreessType: { type: String, enum: ["home", "work"] },
+    recipientName: { type: String, required: true },
+    recipientPhone: { type: String },
 }, { _id: false });
 
 const TrackingEventSchema: Schema = new Schema({
