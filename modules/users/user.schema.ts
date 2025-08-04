@@ -23,7 +23,7 @@ import { z } from "zod";
  *           type: string
  *         role:
  *           type: string
- *           enum: [user, admin]
+ *           enum: [user, admin, employee]
  *         addresses:
  *           type: array
  *           items:
