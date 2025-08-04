@@ -44,11 +44,18 @@ export const registerUser = async (
 
     if (existingUser && existingUser.isDeleted) {
       const rawToken = crypto.randomBytes(32).toString("hex");
-      existingUser.verificationToken = await bcrypt.hash(rawToken, 10);
-      existingUser.verificationTokenExpires = new Date(
+      const verificationTokenExpires = new Date(
         Date.now() + VERIFICATION_TOKEN_LIFETIME
       );
-      await existingUser.save();
+      
+      await User.findByIdAndUpdate(
+        existingUser._id,
+        {
+          verificationToken: await bcrypt.hash(rawToken, 10),
+          verificationTokenExpires: verificationTokenExpires,
+        },
+        { new: true, runValidators: false }
+      );
 
       await sendAccountReactivationEmail(
         existingUser.email,
@@ -66,7 +73,6 @@ export const registerUser = async (
     }
 
     const user = new User(userData);
-
     const rawVerificationToken = crypto.randomBytes(32).toString("hex");
     user.verificationToken = await bcrypt.hash(rawVerificationToken, 10);
     user.verificationTokenExpires = new Date(
@@ -104,11 +110,18 @@ export const loginUser = async (
 
   if (user.isDeleted) {
     const rawToken = crypto.randomBytes(32).toString("hex");
-    user.verificationToken = await bcrypt.hash(rawToken, 10);
-    user.verificationTokenExpires = new Date(
+    const verificationTokenExpires = new Date(
       Date.now() + VERIFICATION_TOKEN_LIFETIME
     );
-    await user.save();
+    
+    await User.findByIdAndUpdate(
+      user._id,
+      {
+        verificationToken: await bcrypt.hash(rawToken, 10),
+        verificationTokenExpires: verificationTokenExpires,
+      },
+      { new: true, runValidators: false }
+    );
 
     await sendAccountReactivationEmail(
       user.email,
@@ -132,11 +145,9 @@ export const loginUser = async (
     throw new UnauthorizedError("Credenciales inválidas.");
   }
 
-  user.lastLoginAt = new Date();
-  await user.save();
+  await User.findByIdAndUpdate(user._id, { lastLoginAt: new Date() });
 
   const token = generateAuthToken(user);
-
   return { user, token };
 };
 
@@ -160,10 +171,15 @@ export const verifyEmail = async (token: string): Promise<string> => {
     throw new UnauthorizedError("El token es inválido o ha expirado.");
   }
 
-  user.isVerified = true;
-  user.verificationToken = undefined;
-  user.verificationTokenExpires = undefined;
-  await user.save();
+  await User.findByIdAndUpdate(
+    user._id,
+    {
+      isVerified: true,
+      verificationToken: undefined,
+      verificationTokenExpires: undefined,
+    },
+    { new: true, runValidators: false }
+  );
 
   return "Tu cuenta ha sido verificada correctamente.";
 };
@@ -173,14 +189,18 @@ export const forgotPassword = async (email: string): Promise<string> => {
   if (!user) throw new NotFoundError("El correo no está registrado.");
 
   const rawToken = crypto.randomBytes(32).toString("hex");
-  user.passwordResetToken = await bcrypt.hash(rawToken, 10);
-  user.passwordResetTokenExpires = new Date(
-    Date.now() + VERIFICATION_TOKEN_LIFETIME
+  const passwordResetTokenExpires = new Date(Date.now() + VERIFICATION_TOKEN_LIFETIME);
+
+  await User.findByIdAndUpdate(
+    user._id,
+    {
+      passwordResetToken: await bcrypt.hash(rawToken, 10),
+      passwordResetTokenExpires: passwordResetTokenExpires,
+    },
+    { new: true, runValidators: false }
   );
-  await user.save();
 
   await sendPasswordResetEmail(user.email, rawToken, user._id.toString());
-
   return "Te enviamos un correo con las instrucciones para restablecer tu contraseña.";
 };
 
@@ -205,12 +225,17 @@ export const resetPassword = async (
   if (!user) {
     throw new UnauthorizedError("Token inválido o expirado.");
   }
-
-  user.password = newPassword;
-  user.passwordResetToken = undefined;
-  user.passwordResetTokenExpires = undefined;
-
-  await user.save();
+  
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  await User.findByIdAndUpdate(
+    user._id,
+    {
+      password: hashedPassword,
+      passwordResetToken: undefined,
+      passwordResetTokenExpires: undefined,
+    },
+    { new: true, runValidators: false }
+  );
 
   return "Tu contraseña ha sido actualizada correctamente.";
 };
@@ -234,11 +259,16 @@ export const reactivateAccount = async (token: string): Promise<string> => {
   if (!user) {
     throw new UnauthorizedError("Token inválido o expirado.");
   }
-
-  user.isDeleted = false;
-  user.verificationToken = undefined;
-  user.verificationTokenExpires = undefined;
-  await user.save();
+  
+  await User.findByIdAndUpdate(
+    user._id,
+    {
+      isDeleted: false,
+      verificationToken: undefined,
+      verificationTokenExpires: undefined,
+    },
+    { new: true, runValidators: false }
+  );
 
   return "Tu cuenta ha sido reactivada correctamente. Ya puedes iniciar sesión.";
 };
