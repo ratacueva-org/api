@@ -8,18 +8,18 @@ export interface Address {
   street: string; // Municipio o alcaldia
   externalNumber?: string; // Numero exterior
   internalNumber?: string; // Numero interior
-  neighborhood: string; // Colonia o barrio
+  neighborhood?: string; // Colonia o barrio
   city: string; // Municipio o alcaldìa
   state: string; // Estado
   country: string; 
   isDefault: boolean;
 
   // New fields to match the provided interface
-  fullAddress: string;
-  locality: string;
+  fullAddress?: string;
+  locality?: string;
   deliveryInstructions?: string;
   addreessType?: "home" | "work";
-  recipientName: string;
+  recipientName?: string;
   recipientPhone?: string;
 }
 
@@ -69,11 +69,11 @@ const AddressSchema = new Schema<Address>(
     isDefault: { type: Boolean, default: false },
 
     // New fields added to match the provided interface
-    fullAddress: { type: String, required: true },
-    locality: { type: String, required: true },
+    fullAddress: { type: String, required: false },
+    locality: { type: String, required: false },
     deliveryInstructions: { type: String },
-    addreessType: { type: String, enum: ["home", "work"] },
-    recipientName: { type: String, required: true },
+    addreessType: { type: String, enum: ["home", "work"], required: false },
+    recipientName: { type: String, required: false },
     recipientPhone: { type: String },
   },  
   // { _id: false }
