@@ -4,15 +4,23 @@ import bcrypt from "bcrypt";
 export type Role = "client" | "employee" | "admin";
 
 export interface Address {
-  postalCode: string;
-  street: string;
-  externalNumber?: string;
-  internalNumber?: string;
-  neighborhood: string;
-  city: string;
-  state: string;
-  country: string;
+  postalCode: string; // CP
+  street: string; // Municipio o alcaldia
+  externalNumber?: string; // Numero exterior
+  internalNumber?: string; // Numero interior
+  neighborhood: string; // Colonia o barrio
+  city: string; // Municipio o alcaldìa
+  state: string; // Estado
+  country: string; 
   isDefault: boolean;
+
+  // New fields to match the provided interface
+  fullAddress: string;
+  locality: string;
+  deliveryInstructions?: string;
+  addreessType?: "home" | "work";
+  recipientName: string;
+  recipientPhone?: string;
 }
 
 export interface PaymentMethod {
@@ -59,7 +67,15 @@ const AddressSchema = new Schema<Address>(
     state: { type: String, required: true },
     country: { type: String, required: true },
     isDefault: { type: Boolean, default: false },
-  },
+
+    // New fields added to match the provided interface
+    fullAddress: { type: String, required: true },
+    locality: { type: String, required: true },
+    deliveryInstructions: { type: String },
+    addreessType: { type: String, enum: ["home", "work"] },
+    recipientName: { type: String, required: true },
+    recipientPhone: { type: String },
+  },  
   // { _id: false }
 );
 

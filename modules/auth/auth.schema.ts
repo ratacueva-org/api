@@ -24,6 +24,19 @@
  *           type: string
  *         isDefault:
  *           type: boolean
+ *         fullAddress:
+ *           type: string
+ *         locality:
+ *           type: string
+ *         deliveryInstructions:
+ *           type: string
+ *         addreessType:
+ *           type: string
+ *           enum: [home, work]
+ *         recipientName:
+ *           type: string
+ *         recipientPhone:
+ *           type: string
  *     PaymentMethod:
  *       type: object
  *       properties:
@@ -110,6 +123,14 @@ export const addressSchema = z.object({
   state: z.string().trim().min(2, "El estado es requerido").max(100),
   country: z.string().trim().min(2, "El país es requerido").max(100),
   isDefault: z.boolean().optional(),
+
+  // New validations
+  fullAddress: z.string().trim().min(5, "La dirección completa es requerida y debe tener al menos 5 caracteres.").max(500, "La dirección completa no puede exceder 500 caracteres."),
+  locality: z.string().trim().min(2, "La localidad es requerida y debe tener al menos 2 caracteres.").max(100, "La localidad no puede exceder 100 caracteres."),
+  deliveryInstructions: z.string().trim().max(500, "Las instrucciones de entrega no pueden exceder 500 caracteres.").optional(),
+  addreessType: z.enum(["home", "work"], { errorMap: () => ({ message: "El tipo de dirección debe ser 'home' o 'work'." }) }).optional(),
+  recipientName: z.string().trim().min(2, "El nombre del destinatario es requerido y debe tener al menos 2 caracteres.").max(100, "El nombre del destinatario no puede exceder 100 caracteres."),
+  recipientPhone: z.string().trim().regex(/^\d{10}$/, "El teléfono del destinatario debe ser de 10 dígitos.").optional(),
 });
 
 export const paymentMethodSchema = z.object({
