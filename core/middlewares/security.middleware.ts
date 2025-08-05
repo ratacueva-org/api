@@ -5,7 +5,8 @@ import { Express } from "express";
 
 const allowedOrigins = [
   "http://localhost:3000",           // Frontend local
-  "https://ratacueva-api.onrender.com"   // Swagger UI / API URL Producción
+  "https://ratacueva-api.onrender.com",   // Swagger UI / API URL Producción
+  "https://ratacueva.netlify.app" // Frontend Producción
 ]
 
 const corsOptions: cors.CorsOptions = {
