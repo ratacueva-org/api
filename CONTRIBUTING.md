@@ -1,123 +1,114 @@
-# Así colaboramos en RataCueva 🐭
+# Contribution Guide — RataCueva API
+
+## Our Flow (GitHub Flow)
+
+Simple and direct:
+
+1. Create your **branch** from `main`.
+2. Make **commits** in English with conventional commits.
+3. Open a **pull request (PR)**.
+4. Get **approval**.
+5. **Merge** and done.
 
 ---
 
-## Nuestro flujo (GitHub Flow)
+## Naming: Branches and Commits
 
-Simple y directo:
+### Branches
 
-1.  Crea tu **rama** desde `main`.
-2.  Haz **commits** en inglés con conventional commits.
-3.  Abre un **pull request (PR)**.
-4.  Obtén **aprobación**.
-5.  **Mergea** y listo.
+| Prefix     | Use                | Examples                   |
+| :--------- | :----------------- | :------------------------- |
+| `feat/`    | New features       | `feat/user-onboarding`     |
+| `fix/`     | Bug fixes          | `fix/login-validation`     |
+| `refactor/`| Code improvements  | `refactor/database-queries`|
+| `docs/`    | Documentation      | `docs/api-endpoints`       |
+| `test/`    | Tests              | `test/search-algorithm`    |
 
----
+### Commits (type: subject)
 
-## Nomenclatura: ramas y commits
-
-### Ramas
-
-| Prefijo     | Uso                | Ejemplos                    |
-| :---------- | :----------------- | :-------------------------- |
-| `feat/`     | Nuevas funciones   | `feat/user-onboarding`      |
-| `fix/`      | Corrección de bugs | `fix/login-validation`      |
-| `refactor/` | Mejoras de código  | `refactor/database-queries` |
-| `docs/`     | Documentación      | `docs/api-endpoints`        |
-
-### Commits (tipo: asunto)
-
-| Tipo        | Descripción                 | Ejemplo                            |
-| :---------- | :-------------------------- | :--------------------------------- |
-| `feat:`     | Nuevas funciones            | `feat: implement user auth`        |
-| `fix:`      | Corrección de bugs          | `fix: correct cart calc error`     |
-| `refactor:` | Reestructuración del código | `refactor: modularize order logic` |
-| `docs:`     | Cambios en la documentación | `docs: update install guide`       |
+| Type        | Description                 | Example                               |
+| :---------- | :-------------------------- | :------------------------------------ |
+| `feat:`     | New features                | `feat: implement user auth`           |
+| `fix:`      | Bug fixes                   | `fix: correct cart calc error`        |
+| `refactor:` | Code restructuring          | `refactor: modularize order logic`    |
+| `docs:`     | Documentation changes       | `docs: update installation guide`     |
+| `test:`     | Add or modify tests         | `test: add patient search tests`      |
 
 ---
 
-## 🚀 Cómo contribuir (paso a paso)
+## How to Contribute (Step by Step)
 
-1.  **Actualiza `main`:**
+1. **Update `main`:**
 
-    ```bash
-    git switch main
-    git pull origin main
-    ```
+   ```bash
+   git switch main
+   git pull origin main
+   ```
 
-    _No uses `--rebase` a menos que sepas bien lo que haces._
+2. **Create your branch:**
 
-2.  **Crea tu rama:**
+   ```bash
+   git branch feat/new-feature
+   git switch feat/new-feature
+   ```
 
-    ```bash
-    git branch feat/la-funcionalidad
-    git switch feat/la-funcionalidad
-    ```
+3. **Work and commit:**
 
-    _Ej: `git branch feat/user-settings` y `git switch feat/user-settings`._
+   ```bash
+   git add .
+   git commit -m "feat: add product search filter"
+   ```
 
-3.  **Trabaja y haz commits:**
+4. **Push your branch to GitHub:**
 
-    - Desarrolla tu código
-    - Haz commits **pequeños y frecuentes**
-    - Usa conventional commits
+   ```bash
+   git push -u origin feat/new-feature
+   ```
 
-    ```bash
-    git add .
-    git commit -m "feat: add save button"
-    ```
-
-4.  **Envía tu rama a GitHub:**
-
-    ```bash
-    git push -u origin feat/la-funcionalidad
-    ```
-
-    _Solo la primera vez. Luego, `git push`._
-
-5.  **Abre un pull request (PR):**
-    - Ve a GitHub.
-    - **Título del PR:** Claro, sigue convención del commit principal (ej. `feat: add contact form`).
-    - **Descripción:**
-      - **Qué:** Resumen de cambios.
-      - **Por qué:** Justificación.
-      - **Cómo probar:** Pasos para el revisor.
-      - **Notas:** Cualquier extra (ej. "breaking changes").
+5. **Open a pull request (PR):**
+   - Go to GitHub.
+   - **Use the default template:** Fill in the template when creating the PR.
+   - **PR Title:** Clear, follows main commit convention (e.g. `feat: add hybrid search mode`).
+   - **Description:**
+     - **What:** Summary of changes.
+     - **Why:** Justification.
+     - **How to test:** Steps for the reviewer.
+     - **Notes:** Anything extra (e.g. breaking changes, impact on other services).
 
 ---
 
-## ✅ Para mergear necesitas:
+## To Merge You Need:
 
-- ✅ **Aprobación** de un miembro del equipo
-- ✅ **Sin conflictos** con `main`
-- ✅ **Nomenclatura correcta** (ramas y commits)
-- ✅ **Documentación** actualizada (si aplica)
-
----
-
-## 💬 Revisión
-
-- **Actualiza:** Si te piden cambios, responde y actualiza tu PR.
+- ✅ **Approval** from a team member
+- ✅ **No conflicts** with `main`
+- ✅ **Correct naming** (branches and commits)
+- ✅ **Updated documentation** (if applicable)
 
 ---
 
-## ⚠️ Reglas clave
+## Code Review
 
-### Antes de mergear
-
-- **¡No merge directo a `main` (siempre vía PR).**
-- **¡No merge código que no compile.**
-- **¡No merge si rompe funcionalidad existente.**
-- **Obligatorio:** Usa la nomenclatura de ramas y commits.
-
-### Después de mergear
-
-- **Elimina tu rama** en GitHub.
-- Notifica al equipo sobre cambios importantes.
+- **Update:** If changes are requested, respond and update your PR.
 
 ---
 
-## ❓ ¿Dudas?
+## Key Rules
 
-- Abre un **Issue**.
-- Contacta a cualquier miembro del equipo.
+### Before Merging
+
+- **No direct merge to `main` (always via PR)!**
+- **Don't merge code that doesn't compile!**
+- **Don't merge if it breaks existing functionality!**
+- **Mandatory:** Use branch and commit naming conventions.
+
+### After Merging
+
+- **Delete your branch** on GitHub.
+- Notify the team about important changes.
+
+---
+
+## Questions?
+
+- Open an **Issue**.
+- Contact any team member.
