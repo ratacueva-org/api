@@ -1,76 +1,123 @@
-# RataCueva API
+# RataCueva API — Gaming Ecommerce Backend
 
-Este es el repositorio del backend para RataCueva, un ecommerce gamer especializado en la venta de videojuegos, componentes de PC, PCs armadas y otros productos relacionados.
+<p align="center">
+  <img src="https://img.shields.io/badge/Express-5.x-000000?logo=express&logoColor=white" alt="Express">
+  <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white" alt="TypeScript">
+  <img src="https://img.shields.io/badge/MongoDB-8.x-47A248?logo=mongodb&logoColor=white" alt="MongoDB">
+  <img src="https://img.shields.io/badge/License-GPL_v3-0298c3?logo=gnu&logoColor=white" alt="GPL v3">
+</p>
 
-Esta API se encarga de gestionar los productos, usuarios, órdenes y la lógica de negocio de la plataforma.
+<p align="center">
+  <em>RESTful backend API for managing products, users, orders, and payments</em>
+</p>
 
-## Tecnologías utilizadas
+<p align="center">
+  <a href="https://github.com/ratacueva-org/ratacueva-api/issues">Report Bug</a>
+  ·
+  <a href="https://ratacueva.netlify.app/home">Visit Website</a>
+</p>
 
-  * **Runtime:** [Node.js](https://nodejs.org/)
-  * **Framework:** [Express.js](https://expressjs.com/)
-  * **Lenguaje:** [TypeScript](https://www.typescriptlang.org/)
-  * **Base de Datos:** [MongoDB](https://www.mongodb.com/) con [Mongoose](https://mongoosejs.com/) como ODM.
-  * **Manejo de Imágenes:** [Cloudinary](https://cloudinary.com/)
-  * **Autenticación:** JWT (JSON Web Tokens)
-  * **Validaciones:** Zod
+<p align="center">
+  <a href="README.md">🇬🇧 English</a> · <a href="README.es.md">🇪🇸 Español</a>
+</p>
 
------
+---
 
-## Instalación
+## About RataCueva API
 
-1.  Clona este repositorio:
+Core REST API for the RataCueva gaming ecommerce platform. Handles product CRUD, user authentication, order processing, payment integration, and image management via Cloudinary.
 
-    ```bash
-    git clone https://github.com/tu-usuario/ratacueva-api
-    ```
+### Ecosystem
 
-2.  Instala las dependencias del proyecto:
+| Component | Repository | Stack |
+|-----------|-----------|-------|
+| Backend API (this) | [ratacueva-org/ratacueva-api](https://github.com/ratacueva-org/ratacueva-api) | Express, TypeScript, MongoDB |
+| Web App | [ratacueva-org/ratacueva-web](https://github.com/ratacueva-org/ratacueva-web) | Next.js, TypeScript, TailwindCSS |
 
-    ```bash
-    npm install
-    ```
+## Features
 
-3.  Crea un archivo `.env` en la raíz del proyecto. Este archivo contendrá las variables de entorno necesarias.
+- Product CRUD with categories and inventory management
+- User authentication with JWT (JSON Web Tokens)
+- Order processing and payment integration
+- Image upload and management with Cloudinary
+- Input validation with Zod
+- Security headers with Helmet
+- Rate limiting for API endpoints
+- Swagger API documentation
 
-    ```env
-    # Puerto del servidor
-    PORT=3000
+## Quick Start
 
-    # Base de Datos
-    MONGO_URI=tu_string_de_conexion_a_mongodb
+### Prerequisites
 
-    # JSON Web Token
-    JWT_SECRET=tu_secreto_para_jwt
+- Node.js 18+
+- npm or yarn
+- MongoDB instance (local or Atlas)
 
-    # Cloudinary
-    CLOUDINARY_CLOUD_NAME=tu_cloud_name
-    CLOUDINARY_API_KEY=tu_api_key
-    CLOUDINARY_API_SECRET=tu_api_secret
-    ```
+### Setup
 
-4.  Inicia el servidor en modo de desarrollo:
+```bash
+git clone https://github.com/ratacueva-org/ratacueva-api.git
+cd ratacueva-api
+npm install
+```
 
-    ```bash
-    npm run dev
-    ```
+### Environment Variables
 
-    O para producción:
+Create a `.env` file:
 
-    ```bash
-    npm start
-    ```
+```
+PORT=3000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+```
 
------
+### Run
 
-## Contribución
+```bash
+# Development
+npm run dev
 
-Si deseas contribuir a este proyecto, por favor sigue los siguientes pasos:
+# Production
+npm start
+```
 
-1.  Haz un fork del repositorio.
-2.  Crea una nueva rama para tu funcionalidad o corrección de errores.
-3.  Realiza tus cambios y haz un commit.
-4.  Envía un pull request para revisión.
+The API will be available at `http://localhost:3000`
 
-## Licencia
+## Architecture
 
-Este proyecto está bajo la licencia MIT. Consulta el archivo `LICENSE` para más detalles.
+```
+├── config/           # Configuration files
+├── core/             # Core application logic
+├── modules/          # Feature modules
+│   ├── products/     # Product management
+│   ├── users/        # User management
+│   ├── orders/       # Order processing
+│   └── auth/         # Authentication
+├── services/         # External services
+├── docs/             # Documentation
+└── index.ts          # Entry point
+```
+
+## API Documentation
+
+Swagger documentation is available at `/api-docs` when the server is running.
+
+## Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for branch naming, commit conventions, and PR workflow.
+
+## License
+
+This project is licensed under the GPL v3 — see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+**Authors:**
+
+- Serrano Puertos Jorge Christian
+- Chavez Moreno Jose Eduardo
+- Lopez Valdes Erick Ernesto
+- Florentino Altamirano Misrael
