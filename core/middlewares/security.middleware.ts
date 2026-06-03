@@ -4,7 +4,8 @@ import rateLimit from "express-rate-limit";
 import { Express } from "express";
 
 const allowedOrigins = [
-  "http://localhost:3000",           // Frontend local
+  "http://localhost:3000",           // Frontend local (puerto por defecto)
+  "http://localhost:3001",           // Frontend local (alternativo)
   "https://ratacueva-api.onrender.com",   // Swagger UI / API URL Producción
   "https://ratacueva.netlify.app" // Frontend Producción
 ]
